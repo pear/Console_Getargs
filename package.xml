@@ -3,12 +3,13 @@
 <package version="1.0">
   <name>Console_Getargs</name>
   <summary>A command-line arguments parser</summary>
-  <description>The Console_Getargs package implements a Command Line arguments
-parser that your CLI applications can use to parse arguments found in
-$_SERVER['argv']. It performs some basic arguments validation and is capable
-to return a formatted help text to the user, based on the configuration 
-it is given.
-</description>
+  <description>
+    The Console_Getargs package implements a Command Line arguments
+    parser that your CLI applications can use to parse arguments found in
+    $_SERVER['argv']. It performs some basic arguments validation and is capable
+    to return a formatted help text to the user, based on the configuration 
+    it is given.
+  </description>
   <maintainers>
     <maintainer>
       <user>mansion</user>
@@ -16,15 +17,26 @@ it is given.
       <email>bmansion@mamasam.com</email>
       <role>lead</role>
     </maintainer>
+    <maintainer>
+      <user>smattocks</user>
+      <name>Scott Mattocks</name>
+      <email>scottmattocks@php.net</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>wenz</user>
+      <name>Christian Wenz</name>
+      <email>wenz@php.net</email>
+      <role>developer</role>
+    </maintainer>
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.0.0</version>
-    <date>2004-09-20</date>
-    <state>stable</state> 
+    <version>1.1.0</version>
+    <date>2004-09-30</date>
+    <state>stable</state>
     <notes><![CDATA[
-First stable release
-Fixed bug #1823 : The getHelp() method ignores user-defined header.
+Implement feature request #2409: Parse args like '-dt'...
     ]]></notes>
     <filelist>
       <dir name="/" baseinstalldir="Console">
@@ -39,11 +51,20 @@ Fixed bug #1823 : The getHelp() method ignores user-defined header.
     </deps>
   </release>
   <changelog>
-  <release>
-    <version>0.1.0</version>
-    <date>2004-05-16</date>
-    <state>beta</state> 
-    <notes>Initial release</notes>
-  </release>
+    <release>
+      <version>1.0.0</version>
+      <date>2004-09-20</date>
+      <state>stable</state> 
+      <notes><![CDATA[
+First stable release
+Fixed bug #1823 : The getHelp() method ignores user-defined header.
+      ]]></notes>
+    </release>
+    <release>
+      <version>0.1.0</version>
+      <date>2004-05-16</date>
+      <state>beta</state> 
+      <notes>Initial release</notes>
+    </release>
   </changelog>
 </package>
