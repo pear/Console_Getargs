@@ -869,7 +869,6 @@ class Console_Getargs_Options
             }
             if ($min > $added && !$paramFull) {
                 // There aren't enough arguments for this option.
-                echo $max . "\t" . count ($this->getValue($optname)) . "\t" . $optname . "\n";
                 return PEAR::raiseError('Argument '.$optname.' expects at least '.$min.(($min > 1) ? ' values' : ' value'),
                                         CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
                                         null, 'Console_Getargs_Options::setValue()');
