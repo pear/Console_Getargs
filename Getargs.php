@@ -699,9 +699,13 @@ class Console_Getargs_Options
                 // Found a match in the short option names.
                 $cmp = $opt;
                 $long = $this->_shortLong[$opt];
-            } else if ($isLong === true && isset($this->_config[$opt])) {
+            } elseif ($isLong === true && isset($this->_config[$opt])) {
                 // Found a match in the long option names.
                 $long = $cmp = $opt;
+            } elseif ($isLong === true && isset($this->_aliasLong[$opt])) {
+                // Found a match in the long option names.
+                $long = $this->_aliasLong[$opt];
+                $cmp = $opt;
             }
             if ($arg{$i} === '=') {
                 // End of the option name when '=' is found.
