@@ -189,13 +189,13 @@ class Console_Getargs
      * @return object|PEAR_Error  a newly created Console_Getargs_Options object
      *                            or a PEAR_Error object on error
      */
-    function &factory($config = array())
+    function &factory($config = array(), $arguments = array())
     {
         // Create the options object.
         $obj =& new Console_Getargs_Options();
 
         // Try to set up the arguments.
-        $err = $obj->init($config);
+        $err = $obj->init($config, $arguments);
         if ($err !== true) {
             return $err;
         }
@@ -390,14 +390,19 @@ class Console_Getargs_Options
      * @throws CONSOLE_GETARGS_ERROR_CONFIG
      * @return true|PEAR_Error
      */
-    function init($config)
+    function init($config, $arguments = array())
     {
-        // Command line arguments must be available.
-        if (!isset($_SERVER['argv']) || !is_array($_SERVER['argv'])) {
-            return PEAR::raiseError("Could not read argv", CONSOLE_GETARGS_ERROR_CONFIG,
-                                    PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::init()');
+        if (count($arguments)) {
+            // Use the user defined argument list.
+            $this->args = $arguments;
+        } else {
+            // Command line arguments must be available.
+            if (!isset($_SERVER['argv']) || !is_array($_SERVER['argv'])) {
+                return PEAR::raiseError("Could not read argv", CONSOLE_GETARGS_ERROR_CONFIG,
+                                        PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::init()');
+            }
+            $this->args = $_SERVER['argv'];
         }
-        $this->args = $_SERVER['argv'];
 
         // Drop the first argument if it doesn't begin with a '-'.
         if (isset($this->args[0]{0}) && $this->args[0]{0} != '-') {

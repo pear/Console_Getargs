@@ -26,6 +26,11 @@ $config = array(
 
 $args =& Console_Getargs::factory($config);
 
+// Use the following two lines to test passing an array
+// other than $_SERVER['argv']
+//$test =  array('-dvw', 500, 'foo1', 'foo2');
+//$args =& Console_Getargs::factory($config, $test);
+
 if (PEAR::isError($args)) {
     $header = "Console_Getargs Example\n".
               'Usage: '.basename($_SERVER['SCRIPT_NAME'])." [options]\n\n";
