@@ -48,6 +48,16 @@ define('CONSOLE_GETARGS_ERROR_USER', -2);
  * the help ascii art text by using the {@link Console_Getargs::getHelp()} method
  */
 define('CONSOLE_GETARGS_HELP', -3);
+
+/**
+ * Option name for application "parameters"
+ *
+ * Parameters are the options an application needs to function.
+ * The two files passed to the diff command would be considered
+ * the parameters. These are different from other options in that
+ * they do not need an option name passed on the command line.
+ */
+define('CONSOLE_GETARGS_PARAMS', 'parameters');
 /**#@-*/
 
 /**
@@ -58,7 +68,9 @@ define('CONSOLE_GETARGS_HELP', -3);
  * Getopt::Simple by Ron Savage
  *
  * This class implements a Command Line Parser that your cli applications
- * can use to parse command line arguments found in $_SERVER['argv']. 
+ * can use to parse command line arguments found in $_SERVER['argv'] or a
+ * user defined array.
+ * 
  * It gives more flexibility and error checking than Console_Getopt. It also
  * performs some arguments validation and is capable to return a formatted
  * help text to the user, based on the configuration it is given.
@@ -81,13 +93,17 @@ define('CONSOLE_GETARGS_HELP', -3);
  * - Short option names may be concatenated (-dvw 100 == -d -v -w 100)
  * - Can define a default option that will take any arguments added without
  *   an option name
+ * - Can pass in a user defined array of arguments instead of using
+ *   $_SERVER['argv']
  * 
- * @todo Implement the parsing of comma delimited arguments
- * @author Bertrand Mansion <bmansion@mamasam.com>
+ * @todo      Implement the parsing of comma delimited arguments
+ * @todo      Make help message more informative by displaying the optional
+ *            and mandatory options.
+ * @author    Bertrand Mansion <bmansion@mamasam.com>
  * @copyright 2004
- * @license http://www.php.net/license/3_0.txt PHP License 3.0
- * @version @VER@
- * @package  Console_Getargs
+ * @license   http://www.php.net/license/3_0.txt PHP License 3.0
+ * @version   @VER@
+ * @package   Console_Getargs
  */
 class Console_Getargs
 {
@@ -178,11 +194,11 @@ class Console_Getargs
      *
      * If you don't want to require any option name for a set of arguments,
      * or if you would like any "leftover" arguments assigned by default, 
-     * you can create an option named 'parameters' that will grab any 
-     * arguments that cannot be assigned to another option. The rules for
-     * 'parameters' are still the same. If you specify that two values must
-     * be passed then two values must be passed. See the example script for
-     * a complete example.
+     * you can create an option named CONSOLE_GETARGS_PARAMS that will
+     * grab any arguments that cannot be assigned to another option. The
+     * rules for CONSOLE_GETARGS_PARAMS are still the same. If you specify
+     * that two values must be passed then two values must be passed. See
+     * the example script for a complete example.
      * 
      * @param array associative array with keys being the options long name
      * @access public
@@ -259,7 +275,7 @@ class Console_Getargs
     {
         $help = '';
         if (!isset($helpHeader)) {
-            $helpHeader = 'Usage: '.basename($_SERVER['SCRIPT_NAME'])." [options]\n\n";
+            $helpHeader = 'Usage: '. __FILE__ ." [options]\n\n";
         }
         $i = 0;
         foreach ($config as $long => $def) {
@@ -392,7 +408,7 @@ class Console_Getargs_Options
      */
     function init($config, $arguments = array())
     {
-        if (count($arguments)) {
+        if (is_array($arguments) && count($arguments)) {
             // Use the user defined argument list.
             $this->args = $arguments;
         } else {
@@ -499,10 +515,10 @@ class Console_Getargs_Options
                 if ($err === -1) {
                     break;
                 }
-            } elseif (isset($this->_config['parameters'])) {
+            } elseif (isset($this->_config[CONSOLE_GETARGS_PARAMS])) {
                 // No flags at all. Try the parameters option.
                 $tempI = &$i - 1;
-                $err = $this->parseArg('parameters', true, $tempI);
+                $err = $this->parseArg(CONSOLE_GETARGS_PARAMS, true, $tempI);
             } else {
                 $err = PEAR::raiseError('Unknown argument '.$arg,
                                      CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
@@ -652,8 +668,8 @@ class Console_Getargs_Options
                 // First update the value
                 $this->updateValue($optname, true);                
                 // Then try to assign values to parameters.
-                if (isset($this->_config['parameters'])) {
-                    return $this->setValue('parameters', '', ++$pos);
+                if (isset($this->_config[CONSOLE_GETARGS_PARAMS])) {
+                    return $this->setValue(CONSOLE_GETARGS_PARAMS, '', ++$pos);
                 } else {
                     return PEAR::raiseError('Argument '.$optname.' does not take any value',
                                             CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
@@ -692,7 +708,7 @@ class Console_Getargs_Options
         // Argument takes one or more values
         $added = 0;
         // If trying to assign values to parameters, must go back one position.
-        if ($optname == 'parameters') {
+        if ($optname == CONSOLE_GETARGS_PARAMS) {
             $pos = max($pos - 1, -1);
         }
         for ($i = $pos + 1; $i <= count($this->args); $i++) {
@@ -714,9 +730,9 @@ class Console_Getargs_Options
             } else if ($max !== -1 && $added >= $max) {
                 // Too many arguments for this option.
                 // Try to add the extra options to parameters.
-                if (isset($this->_config['parameters']) && $optname != 'parameters') {
-                    return $this->setValue('parameters', '', ++$pos);
-                } elseif ($optname == 'parameters' && !isset($this->args[$i + 1])) {
+                if (isset($this->_config[CONSOLE_GETARGS_PARAMS]) && $optname != CONSOLE_GETARGS_PARAMS) {
+                    return $this->setValue(CONSOLE_GETARGS_PARAMS, '', ++$pos);
+                } elseif ($optname == CONSOLE_GETARGS_PARAMS && !isset($this->args[$i + 1])) {
                     $pos += $added;
                     break;
                 } else {
