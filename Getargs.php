@@ -625,7 +625,7 @@ class Console_Getargs_Options
             
             if ($arg === '--') {
                 // '--' alone breaks the loop
-                break;
+                continue;
             }
             if ($arg === '--help' || $arg === '-h') {
                 // Asking for help breaks the loop.
