@@ -631,7 +631,7 @@ class Console_Getargs_Options
                 // Asking for help breaks the loop.
                 return PEAR::raiseError(null, CONSOLE_GETARGS_HELP, PEAR_ERROR_RETURN);
             }
-            if (strlen($arg) > 1 && $arg{1} == '-') {
+            if (strlen($arg) > 1 && $arg{0} == '-' && $arg{1} == '-') {
                 // Long name used (--option)
                 $err = $this->parseArg(substr($arg, 2), true, $i);
             } else if (strlen($arg) > 1 && $arg{0} == '-') {
@@ -894,8 +894,8 @@ class Console_Getargs_Options
      */
     function isValue($arg)
     {
-        if (strlen($arg) > 1 && $arg{1} == '-' ||
-            strlen($arg) > 1 && $arg{0} == '-') {
+        if ((strlen($arg) > 1 && $arg{0} == '-' && $arg{1} == '-') ||
+            (strlen($arg) > 1 && $arg{0} == '-')) {
             // The next argument is really an option.
             return false;
         }
