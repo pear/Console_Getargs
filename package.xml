@@ -48,6 +48,11 @@ New example file.
           <file role="doc" name="example.php" />
           <file role="doc" name="example2.php" />
         </dir>
+        <dir name="tests">
+          <file role="test" name="Console_TestListener.php"/>
+          <file role="test" name="Getargs_basic_testcase.php"/>
+          <file role="test" name="test.php"/>
+        </dir>
       </dir>
     </filelist>
     <deps>
