@@ -25,10 +25,12 @@ $config = array(
 $args =& Console_Getargs::factory($config);
 
 if (PEAR::isError($args)) {
+    $header = "Console_Getargs Example\n".
+              'Usage: '.basename($_SERVER['SCRIPT_NAME'])." [options]\n\n";
     if ($args->getCode() === CONSOLE_GETARGS_ERROR_USER) {
-        echo Console_Getargs::getHelp($config, null, $args->getMessage())."\n";
+        echo Console_Getargs::getHelp($config, $header, $args->getMessage())."\n";
     } else if ($args->getCode() === CONSOLE_GETARGS_HELP) {
-        echo Console_Getargs::getHelp($config)."\n";
+        echo Console_Getargs::getHelp($config, $header)."\n";
     }
     exit;
 }

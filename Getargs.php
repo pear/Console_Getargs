@@ -242,7 +242,7 @@ class Console_Getargs
     {
         $help = '';
         if (!isset($helpHeader)) {
-            $help .= 'Usage: '.basename($_SERVER['SCRIPT_NAME'])." [options]\n\n";
+            $helpHeader = 'Usage: '.basename($_SERVER['SCRIPT_NAME'])." [options]\n\n";
         }
         $i = 0;
         foreach ($config as $long => $def) {
@@ -308,7 +308,7 @@ class Console_Getargs
             }
             $help .= str_pad($txt, $arglen).'  '.$desc."\n";
         }
-        return $help.$helpFooter;
+        return $helpHeader.$help.$helpFooter;
     }
 } // end class Console_Getargs
 
@@ -714,3 +714,4 @@ class Console_Getargs_Options
         return null;
     }
 } // end class Console_Getargs_Options
+?>
