@@ -32,17 +32,24 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.1.0</version>
-    <date>2004-09-30</date>
+    <version>1.2.0</version>
+    <date>2004-10-22</date>
     <state>stable</state>
     <notes><![CDATA[
-Implement feature request #2409: Parse args like '-dt'...
+Implement feature request #2428: Passing parameters on the command line
+Implement feature request #2445: Allow user defined argument lists
+Implement fix for bug #2486: Notice in parseArgs
+More detailed help message. Shows optional/required arguments.
+New example file. 
     ]]></notes>
     <filelist>
       <dir name="/" baseinstalldir="Console">
         <file role="php">Getargs.php</file>
         <dir name="examples">
           <file role="doc">example.php</file>
+        </dir>
+        <dir name="examples">
+          <file role="doc">example2.php</file>
         </dir>
       </dir>
     </filelist>
@@ -51,6 +58,14 @@ Implement feature request #2409: Parse args like '-dt'...
     </deps>
   </release>
   <changelog>
+    <release>
+      <version>1.1.0</version>
+      <date>2004-09-30</date>
+      <state>stable</state>
+      <notes><![CDATA[
+Implement feature request #2409: Parse args like '-dt'...
+      ]]></notes>
+    </release>
     <release>
       <version>1.0.0</version>
       <date>2004-09-20</date>
