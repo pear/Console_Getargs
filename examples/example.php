@@ -54,5 +54,6 @@ echo 'Debug: '.($args->isDefined('d') ? "YES\n" : "NO\n");
 // php -q example.php -v 1 -f src.tiff dest.tiff -d --width=100
 // php -q example.php -v -f src.tiff dest.tiff -fi sharp blur
 // php -q example.php --format gif jpeg png
+// php -q example.php -dvw 100
 
 ?>
