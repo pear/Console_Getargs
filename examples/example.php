@@ -9,19 +9,41 @@ require_once('../Getargs.php');
 
 $config = array(
             // Option takes 2 values
-            'files|images' => array('short' => 'f|i', 'min' => 2, 'max' => 2, 'desc' => 'Set the source and destination image files.'),
+            'files|images' => array('short' => 'f|i',
+				    'min' => 2,
+				    'max' => 2,
+				    'desc' => 'Set the source and destination image files.'),
             // Option takes 1 value
-            'width' => array('short' => 'w', 'min' => 1, 'max' => 1, 'desc' => 'Set the new width of the image.'),
+            'width' => array('short' => 'w',
+			     'min' => 1,
+			     'max' => 1,
+			     'desc' => 'Set the new width of the image.'),
             // Option is a switch
-            'debug' => array('short' => 'd', 'max' => 0, 'desc' => 'Switch to debug mode.'),
+            'debug' => array('short' => 'd',
+			     'max' => 0,
+			     'desc' => 'Switch to debug mode.'),
             // Option takes from 1 to 3 values, using the default value(s) if the arg is not present
-            'formats' => array('min' => 1, 'max' => 3, 'desc' => 'Set the image destination format.', 'default' => array('jpegbig', 'jpegsmall')),
+            'formats' => array('min' => 1,
+			       'max' => 3,
+			       'desc' => 'Set the image destination format.',
+			       'default' => array('jpegbig', 'jpegsmall')),
             // Option takes from 1 to an unlimited number of values
-            'filters' => array('short' => 'fi', 'min' => 1, 'max' => -1, 'desc' => 'Set the filters to be applied to the image upon conversion. The filters will be used in the order they are set.'),
+            'filters' => array('short' => 'fi',
+			       'min' => 1,
+			       'max' => -1,
+			       'desc' => 'Set the filters to be applied to the image upon conversion. The filters will be used in the order they are set.'),
             // Option accept 1 value or nothing. If nothing, then the default value is used
-            'verbose' => array('short' => 'v', 'min' => 0, 'max' => 1, 'desc' => 'Set the verbose level.', 'default' => 3),
+            'verbose' => array('short' => 'v',
+			       'min' => 0,
+			       'max' => 1,
+			       'desc' => 'Set the verbose level.',
+			       'default' => 3),
             // Parameters. Anything leftover at the end of the command line is added.
-            'parameters' => array('min' => 0, 'max' => 2, 'desc' => 'Set the application parameters.', 'default' => 'foo1')
+            CONSOLE_GETARGS_PARAMS => array('min' => 1,
+					    'max' => 2,
+					    'desc' =>
+					    'Set the application parameters.',
+					    'default' => 'DEFAULT')
             );
 
 $args =& Console_Getargs::factory($config);
