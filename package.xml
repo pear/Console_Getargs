@@ -4,11 +4,10 @@
   <name>Console_Getargs</name>
   <summary>A command-line arguments parser</summary>
   <description>
-    The Console_Getargs package implements a Command Line arguments
-    parser that your CLI applications can use to parse arguments from an
-    array of arguments. It performs some basic arguments validation
-    and is capable to return a formatted help text to the user, based on
-    the configuration it is given.
+    The Console_Getargs package implements a Command Line arguments and
+    parameters parser for your CLI applications. It performs some basic
+    arguments validation and automatically creates a formatted help text,
+    based on the given configuration.
   </description>
   <maintainers>
     <maintainer>
@@ -46,7 +45,7 @@ New example file.
       <dir name="/" baseinstalldir="Console">
         <file role="php" name="Getargs.php" />
         <dir name="examples">
-	      <file role="doc" name="example.php" />
+          <file role="doc" name="example.php" />
           <file role="doc" name="example2.php" />
         </dir>
       </dir>
