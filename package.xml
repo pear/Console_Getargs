@@ -19,10 +19,13 @@ it is given.
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>0.1.0</version>
-    <date>2004-05-16</date>
-    <state>beta</state> 
-    <notes>Initial release</notes>
+    <version>1.0.0</version>
+    <date>2004-09-20</date>
+    <state>stable</state> 
+    <notes><![CDATA[
+First stable release
+Fixed bug #1823 : The getHelp() method ignores user-defined header.
+    ]]></notes>
     <filelist>
       <dir name="/" baseinstalldir="Console">
         <file role="php">Getargs.php</file>
@@ -35,4 +38,12 @@ it is given.
       <dep type="php" rel="ge" version="4.1.0" optional="no"/>
     </deps>
   </release>
+  <changelog>
+  <release>
+    <version>0.1.0</version>
+    <date>2004-05-16</date>
+    <state>beta</state> 
+    <notes>Initial release</notes>
+  </release>
+  </changelog>
 </package>
