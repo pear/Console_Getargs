@@ -5,7 +5,7 @@
  * $Id$
  */
 
-require_once('../Getargs.php');
+require_once 'Console/Getargs.php';
 
 $config = array(
             // Option takes 2 values
@@ -60,6 +60,8 @@ if (PEAR::isError($args)) {
         echo Console_Getargs::getHelp($config, $header, $args->getMessage())."\n";
     } else if ($args->getCode() === CONSOLE_GETARGS_HELP) {
         echo Console_Getargs::getHelp($config, $header)."\n";
+        // To see the automatic header uncomment this line
+        //echo Console_Getargs::getHelp($config)."\n";
     }
     exit;
 }

@@ -275,7 +275,11 @@ class Console_Getargs
     {
         $help = '';
         if (!isset($helpHeader)) {
-            $helpHeader = 'Usage: '. __FILE__ ." [options]\n\n";
+            list($optional, $required, $params) = Console_Getargs::getOptionalRequired($config);
+            //$helpHeader = 'Usage: '. __FILE__ ." [options]\n\n";
+            $helpHeader = 'Usage: ' . basename(__FILE__) . ' ';
+            $helpHeader.= $optional . ' ' . $required . ' ';
+            $helpHeader.= $params . "\n\n";
         }
         $i = 0;
         foreach ($config as $long => $def) {
@@ -352,6 +356,99 @@ class Console_Getargs
             $help .= str_pad($txt, $arglen).'  '.$desc."\n";
         }
         return $helpHeader.$help.$helpFooter;
+    }
+    
+    /**
+     * Parse the config array to determine which flags are
+     * optional and which are required.
+     *
+     * To make the help header more descriptive, the options
+     * are shown seperated into optional and required flags.
+     * When possible the short flag is used for readability.
+     * Optional items (including "parameters") are surrounded
+     * in square braces ([-vd]). Required flags are surrounded
+     * in angle brackets (<-wf>). 
+     *
+     * This method may be called statically.
+     *
+     * @access  public
+     * @param   &$config The config array.
+     * @return  array
+     * @author  Scott Mattocks
+     * @package Console_Getargs
+     */
+    function getOptionalRequired(&$config)
+    {
+        // Parse the config array and look for optional/required
+        // tags.
+        $optional         = '';
+        $optionalHasShort = false;
+        $required         = '';
+        $requiredHasShort = false;
+        foreach ($config as $long => $def) {
+            
+            // Treat the "parameters" specially.
+            if ($long == CONSOLE_GETARGS_PARAMS) {
+                continue;
+            }
+
+            // We only need one name for each flag.
+            $long         = reset(explode('|', $long));
+            if (isset($def['short'])) {
+                $def['short'] = reset(explode('|', $def['short']));
+            }
+            
+            // Check to see if the option is optional.
+            // An option is optional if it has no min, the min is zero or it has a default.
+            if (!isset($def['min']) || $def['min'] == 0 || isset($def['default'])) {
+                // Use the short flag if we have it.
+                if (isset($def['short']) && strlen($def['short']) == 1) {
+                    $optional         = $def['short'] . $optional;
+                    // Make a note that we used a short flag.
+                    $optionalHasShort = true;
+                } else {
+                    // We are stuck with the long flag.
+                    $optional.= ' --' . $long;
+                }
+            } else {
+                // Required options.
+                if (isset($def['short']) && strlen($def['short']) == 1) {
+                    // Use the short flag.
+                    $required         = $def['short'] . $required;
+                    // Make a ntoe that we used a short flag/
+                    $requiredHasShort = true;
+                } else {
+                    // We are stuck with the long flag.
+                    $required.= ' --' . $long;
+                }
+            }
+        }
+        
+        // Check for "parameters" option.
+        $params = '';
+        if (isset($config[CONSOLE_GETARGS_PARAMS])) {
+            // A default "parameters" option was specified.
+            for ($i = 1; $i <= max($config[CONSOLE_GETARGS_PARAMS]['max'], $config[CONSOLE_GETARGS_PARAMS]['min']); ++$i) {
+                // Display the number of required parameters.
+                if ($config[CONSOLE_GETARGS_PARAMS]['max'] == -1 || ($i > $config[CONSOLE_GETARGS_PARAMS]['min'] && $i <= $config[CONSOLE_GETARGS_PARAMS]['max'])) {
+                    // This parameter is optional.
+                    $params.= '[param' . $i .'] ';
+                } else {
+                    // This parameter is required.
+                    $params.= 'param' . $i . ' ';
+                }
+            }
+        }
+        // Add a leading - if needed.
+        if ($optionalHasShort) {
+            $optional = '-' . $optional;
+        }        
+        if ($requiredHasShort) {
+            $required = '-' . $required;
+        }
+        
+        // All done.
+        return array('[' . $optional . ']', '<' . $required . '>', $params);
     }
 } // end class Console_Getargs
 
@@ -530,7 +627,7 @@ class Console_Getargs_Options
         }
         // Check to see if we need to reload the arguments
         // due to concatenated short names.
-        if ($err === -1) {
+        if (isset($err) && $err === -1) {
             return $this->parseArgs();
         }
 
