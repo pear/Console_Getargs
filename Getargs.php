@@ -209,7 +209,7 @@ class Console_Getargs
      * @return object|PEAR_Error  a newly created Console_Getargs_Options
      *                            object or a PEAR_Error object on error
      */
-    function &factory($config = array(), $arguments = array())
+    function &factory($config = array(), $arguments = NULL)
     {
         // Create the options object.
         $obj =& new Console_Getargs_Options();
@@ -531,9 +531,9 @@ class Console_Getargs_Options
      * @throws CONSOLE_GETARGS_ERROR_CONFIG
      * @return true|PEAR_Error
      */
-    function init($config, $arguments = array())
+    function init($config, $arguments = NULL)
     {
-        if (is_array($arguments) && count($arguments)) {
+        if (is_array($arguments)) {
             // Use the user defined argument list.
             $this->args = $arguments;
         } else {
