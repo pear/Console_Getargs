@@ -622,16 +622,15 @@ class Console_Getargs_Options
         // Go through the options and parse the arguments for each.
         for ($i = 0, $count = count($this->args); $i < $count; $i++) {
             $arg = $this->args[$i];
-            
-            if ($arg === '--') {
-                // '--' alone breaks the loop
-                continue;
-            }
             if ($arg === '--help' || $arg === '-h') {
                 // Asking for help breaks the loop.
                 return PEAR::raiseError(null, CONSOLE_GETARGS_HELP, PEAR_ERROR_RETURN);
+
             }
-            if (strlen($arg) > 1 && $arg{0} == '-' && $arg{1} == '-') {
+            if ($arg === '--') {
+                // '--' alone signals the start of "parameters"
+                $err = $this->parseArg(CONSOLE_GETARGS_PARAMS, true, ++$i);
+            } elseif (strlen($arg) > 1 && $arg{0} == '-' && $arg{1} == '-') {
                 // Long name used (--option)
                 $err = $this->parseArg(substr($arg, 2), true, $i);
             } else if (strlen($arg) > 1 && $arg{0} == '-') {
@@ -711,6 +710,11 @@ class Console_Getargs_Options
                 // End of the option name when '=' is found.
                 break;
             }
+        }
+
+        // If no option name is found, assume -- was passed.
+        if ($opt == '') {
+            $long = CONSOLE_GETARGS_PARAMS;
         }
         
         if (isset($long)) {
@@ -851,28 +855,30 @@ class Console_Getargs_Options
             $pos = max($pos - 1, -1);
         }
         for ($i = $pos + 1; $i <= count($this->args); $i++) {
-            if (isset($this->args[$i]) && $this->isValue($this->args[$i])) {
+            $paramFull = $max <= count($this->getValue($optname)) && $max != -1;
+            if (isset($this->args[$i]) && $this->isValue($this->args[$i]) && !$paramFull) {
                 // Add the argument value until the next option is hit.
                 $this->updateValue($optname, $this->args[$i]);
                 $added++;
                 $pos++;
                 // Only keep trying if we haven't filled up yet.
                 // or there is no limit
-                if ($added < $max || $max < 0) {
+                if (($added < $max || $max < 0) && ($max < 0 || !$paramFull)) {
                     continue;
                 }
             }
-            if ($min > $added) {
+            if ($min > $added && !$paramFull) {
                 // There aren't enough arguments for this option.
+                echo $max . "\t" . count ($this->getValue($optname)) . "\t" . $optname . "\n";
                 return PEAR::raiseError('Argument '.$optname.' expects at least '.$min.(($min > 1) ? ' values' : ' value'),
                                         CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
                                         null, 'Console_Getargs_Options::setValue()');
-            } elseif ($max !== -1 && $added > $max) {
+            } elseif ($max !== -1 && $paramFull) {
                 // Too many arguments for this option.
                 // Try to add the extra options to parameters.
                 if (isset($this->_config[CONSOLE_GETARGS_PARAMS]) && $optname != CONSOLE_GETARGS_PARAMS) {
                     return $this->setValue(CONSOLE_GETARGS_PARAMS, '', ++$pos);
-                } elseif ($optname == CONSOLE_GETARGS_PARAMS && !isset($this->args[$i + 1])) {
+                } elseif ($optname == CONSOLE_GETARGS_PARAMS && empty($this->args[$i])) {
                     $pos += $added;
                     break;
                 } else {
