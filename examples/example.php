@@ -5,7 +5,7 @@
  * $Id$
  */
 
-require_once('Console/Getargs.php');
+require_once('../Getargs.php');
 
 $config = array(
             // Option takes 2 values
@@ -19,7 +19,9 @@ $config = array(
             // Option takes from 1 to an unlimited number of values
             'filters' => array('short' => 'fi', 'min' => 1, 'max' => -1, 'desc' => 'Set the filters to be applied to the image upon conversion. The filters will be used in the order they are set.'),
             // Option accept 1 value or nothing. If nothing, then the default value is used
-            'verbose' => array('short' => 'v', 'min' => 0, 'max' => 1, 'desc' => 'Set the verbose level.', 'default' => 3)
+            'verbose' => array('short' => 'v', 'min' => 0, 'max' => 1, 'desc' => 'Set the verbose level.', 'default' => 3),
+            // Parameters. Anything leftover at the end of the command line is added.
+            'parameters' => array('min' => 0, 'max' => 2, 'desc' => 'Set the application parameters.', 'default' => 'foo1')
             );
 
 $args =& Console_Getargs::factory($config);
@@ -45,15 +47,35 @@ if ($args->isDefined('fi')) {
 }
 echo 'Width: '.$args->getValue('w')."\n";
 echo 'Debug: '.($args->isDefined('d') ? "YES\n" : "NO\n");
+echo 'Parameters: '.($args->isDefined('parameters') ? is_array($args->getValue('parameters')) ? implode(', ', $args->getValue('parameters')) : $args->getValue('parameters') : "undefined") . "\n";
 
 // Test with:
 // ----------
+// Get the help message
 // php -q example.php -h
+//
+// Pass two files
 // php -q example.php -v -f src.tiff dest.tiff
+//
+// Set verbose level 5, pass two files, and debug
 // php -q example.php -v5 -f src.tiff dest.tiff -d
+//
+// Set verbose level 1, pass two files, debug, and set width to 100
 // php -q example.php -v 1 -f src.tiff dest.tiff -d --width=100
+//
+// Set verbose (defaults to 3), pass two files, and pass two filters
 // php -q example.php -v -f src.tiff dest.tiff -fi sharp blur
+//
+// Set three formats
 // php -q example.php --format gif jpeg png
+//
+// Debug, set verbose to default level and width to 100
 // php -q example.php -dvw 100
+//
+// Pass two application parameters
+// php -q example.php foo1 foo2
+//
+// Debug, set verbose level 5, pass two files, and pass two application parameters
+// php -q examples/example.php -dv5 -f src.tiff dest.tiff foo1 foo2 
 
 ?>

@@ -78,6 +78,9 @@ define('CONSOLE_GETARGS_HELP', -3);
  * - Understands by default the --help, -h options
  * - Can return a formatted help text
  * - Arguments may be specified using the '=' syntax also.
+ * - Short option names may be concatenated (-dvw 100 == -d -v -w 100)
+ * - Can define a default option that will take any arguments added without
+ *   an option name
  * 
  * @todo Implement the parsing of comma delimited arguments
  * @author Bertrand Mansion <bmansion@mamasam.com>
@@ -172,6 +175,14 @@ class Console_Getargs
      * echo 'Debug: '.($args->isDefined('d') ? "YES\n" : "NO\n");
      * 
      * </code>
+     *
+     * If you don't want to require any option name for a set of arguments,
+     * or if you would like any "leftover" arguments assigned by default, 
+     * you can create an option named 'parameters' that will grab any 
+     * arguments that cannot be assigned to another option. The rules for
+     * 'parameters' are still the same. If you specify that two values must
+     * be passed then two values must be passed. See the example script for
+     * a complete example.
      * 
      * @param array associative array with keys being the options long name
      * @access public
@@ -464,7 +475,6 @@ class Console_Getargs_Options
     {
         // Go through the options and parse the arguments for each.
         for ($i = 0, $count = count($this->args); $i < $count; $i++) {
-
             $arg = $this->args[$i];
 
             if ($arg === '--') {
@@ -484,6 +494,10 @@ class Console_Getargs_Options
                 if ($err === -1) {
                     break;
                 }
+            } elseif (isset($this->_config['parameters'])) {
+                // No flags at all. Try the parameters option.
+                $tempI = &$i - 1;
+                $err = $this->parseArg('parameters', true, $tempI);
             } else {
                 $err = PEAR::raiseError('Unknown argument '.$arg,
                                      CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
@@ -515,7 +529,11 @@ class Console_Getargs_Options
         if (!$isLong && !isset($this->_shortLong[$arg]) && strlen($arg) > 1) {
             $newArgs = array();
             for ($i = 0; $i < strlen($arg); $i++) {
-                $newArgs[] = '-' . $arg{$i};
+                if (array_key_exists($arg{$i}, $this->_shortLong)) {
+                    $newArgs[] = '-' . $arg{$i};
+                } else {
+                    $newArgs[] = $arg{$i};
+                }
             }
             // Add the new args to the array.
             array_splice($this->args, $pos, 1, $newArgs);
@@ -591,7 +609,7 @@ class Console_Getargs_Options
 
         // A value was passed after the option.
         if ($value !== '') {
-            // Argument is like -v 5
+            // Argument is like -v5
             if ($min == 1 && $max > 0) {
                 // At least one argument is required for option.
                 $this->updateValue($optname, $value);
@@ -600,8 +618,8 @@ class Console_Getargs_Options
             if ($max === 0) {
                 // Argument passed but not expected.
                 return PEAR::raiseError('Argument '.$optname.' does not take any value',
-                                     CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                     null, 'Console_Getargs_Options::setValue()');
+                                        CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
+                                        null, 'Console_Getargs_Options::setValue()');
             }
             // Not enough arguments passed for this option.
             return PEAR::raiseError('Argument '.$optname.' expects more than one value',
@@ -626,9 +644,16 @@ class Console_Getargs_Options
             // Argument is a switch
             if (isset($this->args[$pos+1]) && $this->isValue($this->args[$pos+1])) {
                 // What we thought was the next option was really an argument for this option.
-                return PEAR::raiseError('Argument '.$optname.' does not take any value',
-                                 CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                 null, 'Console_Getargs_Options::setValue()');
+                // First update the value
+                $this->updateValue($optname, true);                
+                // Then try to assign values to parameters.
+                if (isset($this->_config['parameters'])) {
+                    return $this->setValue('parameters', '', ++$pos);
+                } else {
+                    return PEAR::raiseError('Argument '.$optname.' does not take any value',
+                                            CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
+                                            null, 'Console_Getargs_Options::setValue()');
+                }
             }
             // Set the switch to on.
             $this->updateValue($optname, true);
@@ -661,24 +686,39 @@ class Console_Getargs_Options
 
         // Argument takes one or more values
         $added = 0;
+        // If trying to assign values to parameters, must go back one position.
+        if ($optname == 'parameters') {
+            $pos = max($pos - 1, -1);
+        }
         for ($i = $pos + 1; $i <= count($this->args); $i++) {
             if (isset($this->args[$i]) && $this->isValue($this->args[$i])) {
                 // Add the argument value until the next option is hit.
                 $this->updateValue($optname, $this->args[$i]);
                 $added++;
                 $pos++;
-                continue;
+                // Only keep trying if we haven't filled up yet.
+                if ($added < $max) {
+                    continue;
+                }
             }
             if ($min > $added) {
                 // There aren't enough arguments for this option.
                 return PEAR::raiseError('Argument '.$optname.' expects at least '.$min.(($min > 1) ? ' values' : ' value'),
                          CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
                          null, 'Console_Getargs_Options::setValue()');
-            } else if ($max !== -1 && $added > $max) {
+            } else if ($max !== -1 && $added >= $max) {
                 // Too many arguments for this option.
-                return PEAR::raiseError('Argument '.$optname.' expects maximum '.$max.' values',
-                         CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                         null, 'Console_Getargs_Options::setValue()');
+                // Try to add the extra options to parameters.
+                if (isset($this->_config['parameters']) && $optname != 'parameters') {
+                    return $this->setValue('parameters', '', ++$pos);
+                } elseif ($optname == 'parameters' && !isset($this->args[$i + 1])) {
+                    $pos += $added;
+                    break;
+                } else {
+                    return PEAR::raiseError('Argument '.$optname.' expects maximum '.$max.' values',
+                                            CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
+                                            null, 'Console_Getargs_Options::setValue()');
+                }
             }
             break;
         }
