@@ -867,7 +867,7 @@ class Console_Getargs_Options
                 return PEAR::raiseError('Argument '.$optname.' expects at least '.$min.(($min > 1) ? ' values' : ' value'),
                                         CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
                                         null, 'Console_Getargs_Options::setValue()');
-            } else if ($max !== -1 && $added >= $max) {
+            } elseif ($max !== -1 && $added > $max) {
                 // Too many arguments for this option.
                 // Try to add the extra options to parameters.
                 if (isset($this->_config[CONSOLE_GETARGS_PARAMS]) && $optname != CONSOLE_GETARGS_PARAMS) {
