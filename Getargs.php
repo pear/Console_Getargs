@@ -943,7 +943,10 @@ class Console_Getargs_Options
         foreach ($this->_config as $longname => $def) {
             // Add the default value only if the default is defined 
             // and the option requires at least one argument.
-            if (isset($def['default']) && $def['min'] !== 0 && !isset($this->_longLong[$longname])) {
+            if (isset($def['default']) && 
+			    ((isset($def['min']) && $def['min'] !== 0) ||
+				(!isset($def['min']) & isset($def['max']) && $def['max'] !== 0)) &&
+				!isset($this->_longLong[$longname])) {
                 $this->_longLong[$longname] = $def['default'];
             }
         }
