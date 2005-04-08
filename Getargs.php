@@ -1021,6 +1021,37 @@ class Console_Getargs_Options
         // Option is not defined.
         return null;
     }
+
+    /**
+     * Returns all arguments that have been parsed and recognized
+     *
+     * The name of the options are stored in the keys of the array.
+     * You may choose whether you want to use the long or the short
+     * option names
+     *
+     * @access public
+     * @param  string   option names to use for the keys (long or short)
+     * @return array    values for all options
+     */
+    function getValues($optionNames = 'long')
+    {
+        switch ($optionNames) {
+            case 'short':
+                $values = array();
+                foreach ($this->_shortLong as $short => $long) {
+                	if (isset($this->_longLong[$long])) {
+                		$values[$short] = $this->_longLong[$long];
+                	}
+                }
+                if (isset($this->_longLong['parameters'])) {
+                	$values['parameters'] = $this->_longLong['parameters'];
+                }
+                return $values;
+            case 'long':
+            default:
+                return $this->_longLong;
+        }
+    }
 } // end class Console_Getargs_Options
 /*
  * Local variables:
