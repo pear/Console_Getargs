@@ -28,6 +28,7 @@ require_once './Console_TestListener.php';
 
 $testFiles = array(
     'Getargs_basic_testcase.php' => 'Getargs_Basic_testCase'
+    'Getargs_getValues_testcase.php' => 'Getargs_getValues_testCase'
 );
 
 $suite =& new PHPUnit_TestSuite();
