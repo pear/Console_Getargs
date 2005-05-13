@@ -31,11 +31,11 @@
   </maintainers>
   <license>PHP License</license>
    <release>
-    <version>1.2.1</version>
-    <date>2004-11-18</date>
+    <version>1.3.0</version>
+    <date>2005-05-13</date>
     <state>stable</state>
     <notes><![CDATA[
-Implement fix for bug #2677: Empty array for $arguments parameter (Bertrand Gugger)
+Implement feature request #4091: New method: getValues() (Stephan Schmidt)
     ]]></notes>
     <filelist>
       <dir name="/" baseinstalldir="Console">
@@ -56,6 +56,14 @@ Implement fix for bug #2677: Empty array for $arguments parameter (Bertrand Gugg
     </deps>
   </release>
   <changelog>
+    <release>
+     <version>1.2.1</version>
+     <date>2004-11-18</date>
+     <state>stable</state>
+     <notes><![CDATA[
+Implement fix for bug #2677: Empty array for $arguments parameter (Bertrand Gugger)
+     ]]></notes>
+    </release>
     <release>
       <version>1.2.0</version>
       <date>2004-10-22</date>
