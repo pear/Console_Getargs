@@ -47,6 +47,7 @@ Implement feature request #4091: New method: getValues() (Stephan Schmidt)
         <dir name="tests">
           <file role="test" name="Console_TestListener.php"/>
           <file role="test" name="Getargs_basic_testcase.php"/>
+          <file role="test" name="Getargs_getValues_testcase.php"/>
           <file role="test" name="test.php"/>
         </dir>
       </dir>
