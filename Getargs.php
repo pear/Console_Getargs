@@ -415,14 +415,16 @@ class Console_Getargs
         foreach ($config as $long => $def) {
             
             // We only really care about the first option name.
-            $long = reset(explode('|', $long));
+            $long = explode('|', $long);
+            $long = reset($long);
             
             // Treat the "parameters" specially.
             if ($long == CONSOLE_GETARGS_PARAMS) {
                 continue;
             }
             // We only really care about the first option name.
-            $def['short'] = reset(explode('|', $def['short']));
+            $def['short'] = explode('|', $def['short']);
+            $def['short'] = reset($def['short']);
             
             if (!isset($def['min']) || $def['min'] == 0 || isset($def['default'])) {
                 // This argument is optional.
