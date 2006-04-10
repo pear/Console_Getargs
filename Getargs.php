@@ -285,7 +285,12 @@ class Console_Getargs
             // Get the optional, required and "paramter" names for this config.
             list($optional, $required, $params) = Console_Getargs::getOptionalRequired($config);
             // Start with the file name.
-            $helpHeader = 'Usage: '. basename($_SERVER['SCRIPT_NAME']) . ' ';
+            if (isset($_SERVER['SCRIPT_NAME'])) {
+                $filename = basename($_SERVER['SCRIPT_NAME']);
+            } else {
+                $filename = $argv[0];
+            }
+            $helpHeader = 'Usage: '. $filename . ' ';
             // Add the optional arguments and required arguments.
             $helpHeader.= $optional . ' ' . $required . ' ';
             // Add any parameters that are needed.
