@@ -427,9 +427,11 @@ class Console_Getargs
             if ($long == CONSOLE_GETARGS_PARAMS) {
                 continue;
             }
-            // We only really care about the first option name.
-            $def['short'] = explode('|', $def['short']);
-            $def['short'] = reset($def['short']);
+            if (isset($def['short'])) {
+                // We only really care about the first option name.
+                $def['short'] = explode('|', $def['short']);
+                $def['short'] = reset($def['short']);
+            }
             
             if (!isset($def['min']) || $def['min'] == 0 || isset($def['default'])) {
                 // This argument is optional.
