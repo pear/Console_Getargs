@@ -36,7 +36,7 @@
     <state>stable</state>
     <notes><![CDATA[
 Fix for bug #8643: Providing strings as min/max values gives weird results (Benjamin Bittner)
-Fix for bug #8770: incorrect path to class resource in example2 (
+Fix for bug #8770: incorrect path to class resource in example2 (Laurent Laville)
 Implement request #8771: Improve help-usage output render with optional indentation (Laurent Laville)
 Implement request #8771: Improve col1 arguments alignment (Laurent Laville)
     ]]></notes>
