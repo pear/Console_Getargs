@@ -315,8 +315,9 @@ class Console_Getargs
             $col1[$i] .= '--'.$longArr[0];
             
             // Get the min and max to show needed/optional values.
-            $max = $def['max'];
-            $min = isset($def['min']) ? $def['min'] : $max;
+            // Cast to int to avoid complications elsewhere.
+            $max = (int)$def['max'];
+            $min = isset($def['min']) ? (int)$def['min'] : $max;
             
             if ($max === 1 && $min === 1) {
                 // One value required.

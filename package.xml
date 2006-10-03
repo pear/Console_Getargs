@@ -31,11 +31,12 @@
   </maintainers>
   <license>PHP License</license>
    <release>
-    <version>1.3.1</version>
-    <date>2006-04-10</date>
+    <version>1.3.2</version>
+    <date>2006-10-03</date>
     <state>stable</state>
     <notes><![CDATA[
-Fix for Bug #7132: Missing value for $_SERVER['SCRIPT_NAME']. If $SERVER['SCRIPT_NAME'] not found, use $argv[0].
+Fix for bug #8643: Providing strings as min/max values gives weird results (Benjamin Bittner)
+Fix for bug #8770: incorrect path to class resource in example2 (Laurent Laville)
     ]]></notes>
     <filelist>
       <dir name="/" baseinstalldir="Console">
@@ -57,6 +58,14 @@ Fix for Bug #7132: Missing value for $_SERVER['SCRIPT_NAME']. If $SERVER['SCRIPT
     </deps>
   </release>
   <changelog>
+   <release>
+    <version>1.3.1</version>
+    <date>2006-04-10</date>
+    <state>stable</state>
+    <notes><![CDATA[
+Fix for Bug #7132: Missing value for $_SERVER['SCRIPT_NAME']. If $SERVER['SCRIPT_NAME'] not found, use $argv[0].
+    ]]></notes>
+   </release>
    <release>
     <version>1.3.0</version>
     <date>2005-05-13</date>

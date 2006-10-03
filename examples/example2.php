@@ -118,7 +118,7 @@ class Example {
     function Example($argArray = NULL)
     {
         // Get the config array
-        require_once 'Getargs.php';
+        require_once 'Console/Getargs.php';
         $config = $this->getConfigArray();
         
         // Get the arguments.
