@@ -273,9 +273,10 @@ class Console_Getargs
      * @param  string the footer for the help. This could be used
      *                to supply a description of the error the user made
      * @param  int    help lines max length
+     * @param  int    the indent for the options
      * @return string the formatted help text
      */
-    function getHelp($config, $helpHeader = null, $helpFooter = '', $maxlength = 78)
+    function getHelp($config, $helpHeader = null, $helpFooter = '', $maxlength = 78, $indent = 0)
     {
         // Start with an empty help message and build it piece by piece
         $help = '';
@@ -297,6 +298,25 @@ class Console_Getargs
             $helpHeader.= $params . "\n\n";
         }
         
+        // Create an indent string to be prepended to each option row.
+        $indentStr = str_repeat(' ', (int)$indent);
+
+        // Go through all of the short options to get a padding value.
+        $v = array_values($config);
+        $shortlen = 0;
+        foreach ($v as $item) {
+            if (isset($item['short'])) {
+                $shortArr = explode('|', $item['short']);
+
+                if (strlen($shortArr[0]) > $shortlen) {
+                    $shortlen = strlen($shortArr[0]);
+                }
+            }
+        }
+
+        // Add two to account for the extra characters we add automatically.
+        $shortlen += 2;
+
         // Build the list of options and definitions.
         $i = 0;
         foreach ($config as $long => $def) {
@@ -309,8 +329,10 @@ class Console_Getargs
             $longArr = explode('|', $long);
             
             // Column one is the option name displayed as "-short, --long [additional info]"
+            // Start with the indent string.
+            $col1[$i] = $indentStr;
             // Add the short option name.
-            $col1[$i] = !empty($shortArr) ? '-'.$shortArr[0].' ' : '';
+            $col1[$i] .= str_pad(!empty($shortArr) ? '-' . $shortArr[0] . ' ' : '', $shortlen);
             // Add the long option name.
             $col1[$i] .= '--'.$longArr[0];
             
@@ -768,8 +790,8 @@ class Console_Getargs_Options
                                     E_USER_WARNING, 'Console_Getargs_Options::setValue()');
         }
         
-        $max = $this->_config[$optname]['max'];
-        $min = isset($this->_config[$optname]['min']) ? $this->_config[$optname]['min']: $max;
+        $max = (int)$this->_config[$optname]['max'];
+        $min = isset($this->_config[$optname]['min']) ? (int)$this->_config[$optname]['min']: $max;
         
         // A value was passed after the option.
         if ($value !== '') {

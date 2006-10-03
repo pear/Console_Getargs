@@ -134,10 +134,10 @@ class Example {
         if (PEAR::isError($args)) {
             if ($args->getCode() === CONSOLE_GETARGS_ERROR_USER) {
                 // User put illegal values on the command line.
-                echo Console_Getargs::getHelp($config, NULL, $args->getMessage())."\n";
+                echo Console_Getargs::getHelp($config, NULL, $args->getMessage(), 78, 4)."\n";
             } else if ($args->getCode() === CONSOLE_GETARGS_HELP) {
                 // User needs help.
-                echo Console_Getargs::getHelp($config)."\n";
+                echo Console_Getargs::getHelp($config, NULL, NULL, 78, 4)."\n";
             }
             exit;
         } else {
@@ -173,7 +173,7 @@ class Example {
         $configArray = array();
         
         // Allow the user to show debug output.
-        $configArray['debug'] = array('short' => 'd',
+        $configArray['debug'] = array('short' => 'db',
                                       'max'   => 0,
                                       'desc'  => 'Show debug output.'
                                       );
