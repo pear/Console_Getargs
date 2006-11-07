@@ -151,7 +151,8 @@ class Example {
             // Make sure the file is readable.
             if (!@is_readable($this->file)) {
                 $msg = $this->file . ' is not readable.';
-                Console_Getargs::getHelp($config, NULL, $msg);
+                echo Console_Getargs::getHelp($config, NULL, $msg) . "\n";
+                exit;
             }
         }
     }

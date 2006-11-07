@@ -237,6 +237,12 @@ class Console_Getargs
         if ($err !== true) {
             return $err;
         }
+
+        // Double check that all required options have been passed.
+        $err = $obj->checkRequired();
+        if ($err !== true) {
+            return $err;
+        }
         
         // All is good.
         return $obj;
@@ -792,7 +798,7 @@ class Console_Getargs_Options
         
         $max = (int)$this->_config[$optname]['max'];
         $min = isset($this->_config[$optname]['min']) ? (int)$this->_config[$optname]['min']: $max;
-        
+
         // A value was passed after the option.
         if ($value !== '') {
             // Argument is like -v5
@@ -1083,6 +1089,23 @@ class Console_Getargs_Options
             default:
                 return $this->_longLong;
         }
+    }
+
+    function checkRequired()
+    {
+        foreach ($this->_config as $optName => $opt) {
+            if (isset($opt['min']) && $opt['min'] == 1 &&
+                $this->getValue($optName) === null
+                ) {
+                $err = PEAR::raiseError($optName . ' is required', 
+                                        CONSOLE_GETARGS_ERROR_USER,
+                                        PEAR_ERROR_RETURN, null,
+                                        'Console_Getargs_Options::parseArgs()'
+                                        );
+                return $err;
+            }
+        }        
+        return true;
     }
 } // end class Console_Getargs_Options
 /*
