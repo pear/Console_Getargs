@@ -164,7 +164,7 @@ class Console_Getargs
      * 
      * Example 1.
      * <code>
-     * require_once 'Console_Getargs.php';
+     * require_once 'Console/Getargs.php';
      *
      * $args =& Console_Getargs::factory($config);
      * 
