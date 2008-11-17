@@ -21,25 +21,37 @@
 /**
  * Unit tests for Console_Getargs package.
  */
-
-require_once 'Console/Getargs.php';
-require_once 'PHPUnit.php';
-require_once './Console_TestListener.php';
-
-$testFiles = array(
-    'Getargs_basic_testcase.php' => 'Getargs_Basic_testCase',
-    'Getargs_getValues_testcase.php' => 'Getargs_getValues_testCase'
-);
-
-$suite =& new PHPUnit_TestSuite();
-foreach ($testFiles as $file => $testsuite) {
-    require_once $file;
-    $tmp = new PHPUnit_TestSuite($testsuite);
-    $suite->addTest($tmp);
+if (!defined('PHPUnit_MAIN_METHOD')) {
+    define('PHPUnit_MAIN_METHOD', 'Console_Getargs_AllTests::main');
 }
 
-$result =& new PHPUnit_TestResult();
-$result->addListener(new Console_TestListener);
+require_once 'PHPUnit/Framework/TestSuite.php';
+require_once 'PHPUnit/TextUI/TestRunner.php';
 
-$suite->run($result);
+
+chdir(dirname(__FILE__) . '/../');
+require_once 'Getargs_basic_testcase.php';
+require_once 'Getargs_getValues_testcase.php';
+
+class Console_Getargs_AllTests
+{
+    public static function main()
+    {
+        PHPUnit_TextUI_TestRunner::run(self::suite());
+    }
+
+    public static function suite()
+    {
+        $suite = new PHPUnit_Framework_TestSuite('Console_Getargs Tests');
+        /** Add testsuites, if there is. */
+        $suite->addTestSuite('Getargs_basic_testcase');
+        $suite->addTestSuite('Getargs_getValues_testcase');
+
+        return $suite;
+    }
+}
+
+if (PHPUnit_MAIN_METHOD == 'Console_Getargs_AllTests::main') {
+    Console_Getargs_AllTests::main();
+}
 ?>

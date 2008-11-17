@@ -21,6 +21,12 @@
  * @version    CVS: $Id$
  * @link       http://pear.php.net/package/Console_Getargs
  */
+if (!defined('PHPUnit_MAIN_METHOD')) {
+    define('PHPUnit_MAIN_METHOD', 'Getargs_getValues_testCase::main');
+}
+
+require_once 'Console/Getargs.php';
+require_once 'PHPUnit/Framework.php';
 
 /**
  * getValues Test case for Console_Getargs
@@ -34,17 +40,22 @@
  * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Console_Getargs
  */
-class Getargs_getValues_testCase extends PHPUnit_TestCase
+class Getargs_getValues_testCase extends PHPUnit_Framework_TestCase
 {
-   /**
-    * Constructor.
-    *
-    * @param    string      name of the testcase
-    */
-    function Getargs_getValues_testCase($name)
-    {
-        $this->PHPUnit_TestCase($name);
+    /**
+     * Runs the test methods of this class.
+     *
+     * @access public
+     * @static
+     */
+    public static function main() {
+        require_once 'PHPUnit/TextUI/TestRunner.php';
+
+        $suite  = new PHPUnit_Framework_TestSuite('Getargs_getValues_testCase');
+        PHPUnit_TextUI_TestRunner::run($suite);
     }
+
+
 
    /**
     * Test getValues('long') with one argument
@@ -278,4 +289,9 @@ class Getargs_getValues_testCase extends PHPUnit_TestCase
         }
     }
 }
+
+if (PHPUnit_MAIN_METHOD == 'Getargs_getValues_testCase::main') {
+    Getargs_getValues_testCase::main();
+}
+
 ?>

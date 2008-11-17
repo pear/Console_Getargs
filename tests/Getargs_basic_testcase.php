@@ -17,18 +17,33 @@
 // +----------------------------------------------------------------------+
 //
 // $Id$
+if (!defined('PHPUnit_MAIN_METHOD')) {
+    define('PHPUnit_MAIN_METHOD', 'Getargs_Basic_testCase::main');
+}
+
+require_once 'Console/Getargs.php';
+require_once 'PHPUnit/Framework.php';
 
 /**
  * Unit tests for Console_Getargs package.
  */
 
-class Getargs_Basic_testCase extends PHPUnit_TestCase
+class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
 {
+    /**
+     * Runs the test methods of this class.
+     *
+     * @access public
+     * @static
+     */
+    public static function main() {
+        require_once 'PHPUnit/TextUI/TestRunner.php';
 
-    function Getargs_Usage_testCase($name)
-    {
-        $this->PHPUnit_TestCase($name);
+        $suite  = new PHPUnit_Framework_TestSuite('Getargs_Basic_testCase');
+        PHPUnit_TextUI_TestRunner::run($suite);
     }
+
+
 
     function testFixed1()
     {
@@ -368,4 +383,9 @@ class Getargs_Basic_testCase extends PHPUnit_TestCase
     }
 
 }
+
+if (PHPUnit_MAIN_METHOD == 'Getargs_Basic_testCase::main') {
+    Getargs_Basic_testCase::main();
+}
+
 ?>
