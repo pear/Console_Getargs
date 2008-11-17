@@ -128,7 +128,9 @@ class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
             $this->assertEquals($args[1], $obj->getValue('name'), "'$message' Incorrect value returned");
         }
 
-        $obj =& Console_Getargs::factory($config);
+        $args = array();
+
+        $obj =& Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail($obj->getMessage());
@@ -158,7 +160,9 @@ class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
             $this->assertEquals(array($args[1], $args[2]), $obj->getValue('names'), "'$message' Incorrect value returned");
         }
 
-        $obj =& Console_Getargs::factory($config);
+        $args = array();
+
+        $obj =& Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail($obj->getMessage());
@@ -297,7 +301,9 @@ class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
             $this->assertEquals(array('arg1', 'arg2', 'arg3'), $obj->getValue('name'), "'$message' Incorrect values returned");
         }
 
-        $obj =& Console_Getargs::factory($config);
+        $args = array();
+
+        $obj =& Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -347,10 +353,12 @@ class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
                         'default' => 'default1')
                         );
 
-        $obj =& Console_Getargs::factory($config);
+        $args = array();
+
+        $obj =& Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
-            $this->fail("'$message' ".$obj->getMessage());
+            $this->fail($obj->getMessage());
         } else {
             $this->assertEquals('default1', $obj->getValue('name'), "Incorrect values returned");
         }
