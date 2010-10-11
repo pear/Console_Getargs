@@ -1,4 +1,16 @@
 <?php
+/**
+ * Getargs.php 
+ * 
+ * @category  Extension
+ * @package   Console_Getargs
+ * @author    Bertrand Mansion <bmansion@mamasam.com>
+ * @copyright 2004 Bertrand Mansion
+ * @license   http://www.php.net/license/3_0.txt PHP License 3.0
+ * @version   $id$
+ * @link      http://pear.php.net/package/Console_Getargs
+ */
+
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | PHP Version 4                                                        |
@@ -17,12 +29,10 @@
 // +----------------------------------------------------------------------+
 //
 // $Id$
-
 require_once 'PEAR.php';
-
 /**#@+
  * Error Constants
- */
+*/
 /**
  * Wrong configuration
  *
@@ -30,7 +40,6 @@ require_once 'PEAR.php';
  * it will also issue a WARNING.
  */
 define('CONSOLE_GETARGS_ERROR_CONFIG', -1);
-
 /**
  * User made an error
  *
@@ -39,7 +48,6 @@ define('CONSOLE_GETARGS_ERROR_CONFIG', -1);
  * or a parameter with an invalid number of options.
  */
 define('CONSOLE_GETARGS_ERROR_USER', -2);
-
 /**
  * Help text wanted
  *
@@ -48,7 +56,6 @@ define('CONSOLE_GETARGS_ERROR_USER', -2);
  * the help ascii art text by using the {@link Console_Getargs::getHelp()} method
  */
 define('CONSOLE_GETARGS_HELP', -3);
-
 /**
  * Option name for application "parameters"
  *
@@ -59,7 +66,6 @@ define('CONSOLE_GETARGS_HELP', -3);
  */
 define('CONSOLE_GETARGS_PARAMS', 'parameters');
 /**#@-*/
-
 /**
  * Command-line arguments parsing class
  * 
@@ -99,13 +105,15 @@ define('CONSOLE_GETARGS_PARAMS', 'parameters');
  * @todo      Implement the parsing of comma delimited arguments
  * @todo      Implement method for turning assocative arrays into command
  *            line arguments (ex. array('d' => true, 'v' => 2) -->
- *                                array('-d', '-v', 2))
- *
+ *            array('-d', '-v', 2))
+ *            
+ * @category  Extension
+ * @package   Console_Getargs
  * @author    Bertrand Mansion <bmansion@mamasam.com>
- * @copyright 2004
+ * @copyright 2004 Bertrand Mansion
  * @license   http://www.php.net/license/3_0.txt PHP License 3.0
  * @version   @VER@
- * @package   Console_Getargs
+ * @link      http://pear.php.net/package/Console_Getargs
  */
 class Console_Getargs
 {
@@ -202,52 +210,45 @@ class Console_Getargs
      * that two values must be passed then two values must be passed. See
      * the example script for a complete example.
      * 
-     * @param  array  $config     associative array with keys being the
-     *                            options long name
-     * @param  array  $arguments  numeric array of command line arguments
-     * @access public
-     * @return object|PEAR_Error  a newly created Console_Getargs_Options
-     *                            object or a PEAR_Error object on error
+     * @param array $config    associative array with keys being the
+     * @param array $arguments numeric array of command line arguments
+     *
+     * @access public           
+     * @return object|PEAR_Error a newly created Console_Getargs_Options
+     *                           object or a PEAR_Error object on error
      */
-    function &factory($config = array(), $arguments = NULL)
+    function &factory($config = array(), $arguments = null)
     {
         // Create the options object.
-        $obj =& new Console_Getargs_Options();
-        
+        $obj = & new Console_Getargs_Options();
         // Try to set up the arguments.
         $err = $obj->init($config, $arguments);
         if ($err !== true) {
             return $err;
         }
-        
         // Try to set up the options.
         $err = $obj->buildMaps();
         if ($err !== true) {
             return $err;
         }
-        
         // Get the options and arguments from the command line.
         $err = $obj->parseArgs();
         if ($err !== true) {
             return $err;
         }
-        
         // Set arguments for options that have defaults.
         $err = $obj->setDefaults();
         if ($err !== true) {
             return $err;
         }
-
         // Double check that all required options have been passed.
         $err = $obj->checkRequired();
         if ($err !== true) {
             return $err;
         }
-        
         // All is good.
         return $obj;
     }
-    
     /**
      * Returns an ascii art version of the help
      *
@@ -272,21 +273,21 @@ class Console_Getargs
      * -v --verbose (optional)value  Set the verbose level. (3)
      * </pre>
      *
+     * @param array  $config     your args configuration
+     * @param string $helpHeader the header for the help. If it is left null,
+     *                           a default header will be used, starting by Usage:
+     * @param string $helpFooter the footer for the help. This could be used
+     *                           to supply a description of the error the user made
+     * @param int    $maxlength  help lines max length
+     * @param int    $indent     the indent for the options
+     *
      * @access public
-     * @param  array  your args configuration
-     * @param  string the header for the help. If it is left null,
-     *                a default header will be used, starting by Usage:
-     * @param  string the footer for the help. This could be used
-     *                to supply a description of the error the user made
-     * @param  int    help lines max length
-     * @param  int    the indent for the options
      * @return string the formatted help text
      */
     function getHelp($config, $helpHeader = null, $helpFooter = '', $maxlength = 78, $indent = 0)
     {
         // Start with an empty help message and build it piece by piece
         $help = '';
-        
         // If no user defined header, build the default header.
         if (!isset($helpHeader)) {
             // Get the optional, required and "paramter" names for this config.
@@ -297,82 +298,72 @@ class Console_Getargs
             } else {
                 $filename = $argv[0];
             }
-            $helpHeader = 'Usage: '. $filename . ' ';
+            $helpHeader = 'Usage: ' . $filename . ' ';
             // Add the optional arguments and required arguments.
             $helpHeader.= $optional . ' ' . $required . ' ';
             // Add any parameters that are needed.
             $helpHeader.= $params . "\n\n";
         }
-        
         // Create an indent string to be prepended to each option row.
         $indentStr = str_repeat(' ', (int)$indent);
-
         // Go through all of the short options to get a padding value.
         $v = array_values($config);
         $shortlen = 0;
         foreach ($v as $item) {
             if (isset($item['short'])) {
                 $shortArr = explode('|', $item['short']);
-
                 if (strlen($shortArr[0]) > $shortlen) {
                     $shortlen = strlen($shortArr[0]);
                 }
             }
         }
-
         // Add two to account for the extra characters we add automatically.
-        $shortlen += 2;
-
+        $shortlen+= 2;
         // Build the list of options and definitions.
         $i = 0;
         foreach ($config as $long => $def) {
-            
             // Break the names up if there is more than one for an option.
             $shortArr = array();
             if (isset($def['short'])) {
                 $shortArr = explode('|', $def['short']);
             }
             $longArr = explode('|', $long);
-            
             // Column one is the option name displayed as "-short, --long [additional info]"
             // Start with the indent string.
             $col1[$i] = $indentStr;
             // Add the short option name.
-            $col1[$i] .= str_pad(!empty($shortArr) ? '-' . $shortArr[0] . ' ' : '', $shortlen);
+            $col1[$i].= str_pad(!empty($shortArr) ? '-' . $shortArr[0] . ' ' : '', $shortlen);
             // Add the long option name.
-            $col1[$i] .= '--'.$longArr[0];
-            
+            $col1[$i].= '--' . $longArr[0];
             // Get the min and max to show needed/optional values.
             // Cast to int to avoid complications elsewhere.
             $max = (int)$def['max'];
             $min = isset($def['min']) ? (int)$def['min'] : $max;
-            
             if ($max === 1 && $min === 1) {
                 // One value required.
-                $col1[$i] .= '=<value>';
+                $col1[$i].= '=<value>';
             } else if ($max > 1) {
                 if ($min === $max) {
                     // More than one value needed.
-                    $col1[$i] .= ' values('.$max.')';
+                    $col1[$i].= ' values(' . $max . ')';
                 } else if ($min === 0) {
                     // Argument takes optional value(s).
-                    $col1[$i] .= ' values(optional)';
+                    $col1[$i].= ' values(optional)';
                 } else {
                     // Argument takes a range of values.
-                    $col1[$i] .= ' values('.$min.'-'.$max.')';
+                    $col1[$i].= ' values(' . $min . '-' . $max . ')';
                 }
             } else if ($max === 1 && $min === 0) {
                 // Argument can take at most one value.
-                $col1[$i] .= ' (optional)value';
-            } else if ($max === -1) {
+                $col1[$i].= ' (optional)value';
+            } else if ($max === - 1) {
                 // Argument can take unlimited values.
                 if ($min > 0) {
-                    $col1[$i] .= ' values('.$min.'-...)';
+                    $col1[$i].= ' values(' . $min . '-...)';
                 } else {
-                    $col1[$i] .= ' (optional)values';
+                    $col1[$i].= ' (optional)values';
                 }
             }
-            
             // Column two is the description if available.
             if (isset($def['desc'])) {
                 $col2[$i] = $def['desc'];
@@ -382,14 +373,13 @@ class Console_Getargs
             // Add the default value(s) if there are any/
             if (isset($def['default'])) {
                 if (is_array($def['default'])) {
-                    $col2[$i] .= ' ('.implode(', ', $def['default']).')';
+                    $col2[$i].= ' (' . implode(', ', $def['default']) . ')';
                 } else {
-                    $col2[$i] .= ' ('.$def['default'].')';
+                    $col2[$i].= ' (' . $def['default'] . ')';
                 }
             }
             $i++;
         }
-        
         // Figure out the maximum length for column one.
         $arglen = 0;
         foreach ($col1 as $txt) {
@@ -398,25 +388,22 @@ class Console_Getargs
                 $arglen = $length;
             }
         }
-        
         // The maximum length for each description line.
         $desclen = $maxlength - $arglen;
         $padding = str_repeat(' ', $arglen);
         foreach ($col1 as $k => $txt) {
             // Wrap the descriptions.
             if (strlen($col2[$k]) > $desclen) {
-                $desc = wordwrap($col2[$k], $desclen, "\n  ".$padding);
+                $desc = wordwrap($col2[$k], $desclen, "\n  " . $padding);
             } else {
                 $desc = $col2[$k];
             }
             // Push everything together.
-            $help .= str_pad($txt, $arglen).'  '.$desc."\n";
+            $help.= str_pad($txt, $arglen) . '  ' . $desc . "\n";
         }
-        
         // Put it all together.
-        return $helpHeader.$help.$helpFooter;
+        return $helpHeader . $help . $helpFooter;
     }
-    
     /**
      * Parse the config array to determine which flags are
      * optional and which are required.
@@ -430,9 +417,10 @@ class Console_Getargs
      *
      * This method may be called statically.
      *
-     * @access  public
-     * @param   &$config The config array.
-     * @return  array
+     * @param array &$config The config array.
+     *
+     * @access  public  
+     * @return  array   
      * @author  Scott Mattocks
      * @package Console_Getargs
      */
@@ -440,18 +428,15 @@ class Console_Getargs
     {
         // Parse the config array and look for optional/required
         // tags.
-        $optional         = '';
+        $optional = '';
         $optionalHasShort = false;
-        $required         = '';
+        $required = '';
         $requiredHasShort = false;
-        
         ksort($config);
         foreach ($config as $long => $def) {
-            
             // We only really care about the first option name.
             $long = explode('|', $long);
             $long = reset($long);
-            
             // Treat the "parameters" specially.
             if ($long == CONSOLE_GETARGS_PARAMS) {
                 continue;
@@ -461,11 +446,10 @@ class Console_Getargs
                 $def['short'] = explode('|', $def['short']);
                 $def['short'] = reset($def['short']);
             }
-            
             if (!isset($def['min']) || $def['min'] == 0 || isset($def['default'])) {
                 // This argument is optional.
                 if (isset($def['short']) && strlen($def['short']) == 1) {
-                    $optional         = $def['short'] . $optional;
+                    $optional = $def['short'] . $optional;
                     $optionalHasShort = true;
                 } else {
                     $optional.= ' --' . $long;
@@ -473,24 +457,20 @@ class Console_Getargs
             } else {
                 // This argument is required.
                 if (isset($def['short']) && strlen($def['short']) == 1) {
-                    $required         = $def['short'] . $required;
+                    $required = $def['short'] . $required;
                     $requiredHasShort = true;
                 } else {
                     $required.= ' --' . $long;
                 }
             }
         }
-        
         // Check for "parameters" option.
         $params = '';
         if (isset($config[CONSOLE_GETARGS_PARAMS])) {
             for ($i = 1; $i <= max($config[CONSOLE_GETARGS_PARAMS]['max'], $config[CONSOLE_GETARGS_PARAMS]['min']); ++$i) {
-                if ($config[CONSOLE_GETARGS_PARAMS]['max'] == -1 ||
-                    ($i > $config[CONSOLE_GETARGS_PARAMS]['min'] &&
-                     $i <= $config[CONSOLE_GETARGS_PARAMS]['max']) ||
-                    isset($config[CONSOLE_GETARGS_PARAMS]['default'])) {
+                if ($config[CONSOLE_GETARGS_PARAMS]['max'] == - 1 || ($i > $config[CONSOLE_GETARGS_PARAMS]['min'] && $i <= $config[CONSOLE_GETARGS_PARAMS]['max']) || isset($config[CONSOLE_GETARGS_PARAMS]['default'])) {
                     // Parameter is optional.
-                    $params.= '[param' . $i .'] ';
+                    $params.= '[param' . $i . '] ';
                 } else {
                     // Parameter is required.
                     $params.= 'param' . $i . ' ';
@@ -501,11 +481,9 @@ class Console_Getargs
         if ($optionalHasShort) {
             $optional = '-' . $optional;
         }
-        
         if ($requiredHasShort) {
             $required = '-' . $required;
         }
-        
         // Add the extra characters if needed.
         if (!empty($optional)) {
             $optional = '[' . $optional . ']';
@@ -513,7 +491,6 @@ class Console_Getargs
         if (!empty($required)) {
             $required = '<' . $required . '>';
         }
-        
         return array($optional, $required, $params);
     }
 } // end class Console_Getargs
@@ -521,62 +498,61 @@ class Console_Getargs
 /**
  * This class implements a wrapper to the command line options and arguments.
  *
- * @author Bertrand Mansion <bmansion@mamasam.com>
+ * @category Extension
  * @package  Console_Getargs
+ * @author   Bertrand Mansion <bmansion@mamasam.com>
+ * @license  http://www.php.net/license/3_0.txt PHP License 3.0
+ * @link     http://pear.php.net/package/Console_Getargs
  */
 class Console_Getargs_Options
 {
-    
     /**
      * Lookup to match short options name with long ones
-     * @var array
+     * @var    array  
      * @access private
      */
     var $_shortLong = array();
-    
     /**
      * Lookup to match alias options name with long ones
-     * @var array
+     * @var    array  
      * @access private
      */
     var $_aliasLong = array();
-    
     /**
      * Arguments set for the options
-     * @var array
+     * @var    array  
      * @access private
      */
     var $_longLong = array();
-    
     /**
      * If arguments have been defined on cmdline
-     * @var array
+     * @var    array  
      * @access private
      */
     var $_defined = array();
-
     /**
      * Configuration set at initialization time
-     * @var array
+     * @var    array  
      * @access private
      */
     var $_config = array();
-    
     /**
      * A read/write copy of argv
-     * @var array
+     * @var    array  
      * @access private
      */
     var $args = array();
-    
     /**
      * Initializes the Console_Getargs_Options object
-     * @param array configuration options
-     * @access private
+     *
+     * @param array $config    configuration options
+     * @param array $arguments arguments
+     *
+     * @access private                     
      * @throws CONSOLE_GETARGS_ERROR_CONFIG
-     * @return true|PEAR_Error
+     * @return true|PEAR_Error             
      */
-    function init($config, $arguments = NULL)
+    function init($config, $arguments = null)
     {
         if (is_array($arguments)) {
             // Use the user defined argument list.
@@ -584,43 +560,39 @@ class Console_Getargs_Options
         } else {
             // Command line arguments must be available.
             if (!isset($_SERVER['argv']) || !is_array($_SERVER['argv'])) {
-                return PEAR::raiseError("Could not read argv", CONSOLE_GETARGS_ERROR_CONFIG,
-                                        PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::init()');
+                return PEAR::raiseError("Could not read argv", CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::init()');
             }
             $this->args = $_SERVER['argv'];
         }
-        
         // Drop the first argument if it doesn't begin with a '-'.
-        if (isset($this->args[0]{0}) && $this->args[0]{0} != '-') {
+        if (isset($this->args[0] { 0 })
+            && $this->args[0] { 0 } != '-'
+        ) {
             array_shift($this->args);
         }
         $this->_config = $config;
         return true;
     }
-    
     /**
      * Makes the lookup arrays for alias and short name mapping with long names
-     * @access private
+     *
+     * @access private                     
      * @throws CONSOLE_GETARGS_ERROR_CONFIG
-     * @return true|PEAR_Error
+     * @return true|PEAR_Error             
      */
     function buildMaps()
     {
-        foreach($this->_config as $long => $def) {
-            
+        foreach ($this->_config as $long => $def) {
             $longArr = explode('|', $long);
             $longname = $longArr[0];
-            
             if (count($longArr) > 1) {
                 // The fisrt item in the list is "the option".
                 // The rest are aliases.
                 array_shift($longArr);
-                foreach($longArr as $alias) {
+                foreach ($longArr as $alias) {
                     // Watch out for duplicate aliases.
                     if (isset($this->_aliasLong[$alias])) {
-                        return PEAR::raiseError('Duplicate alias for long option '.$alias, CONSOLE_GETARGS_ERROR_CONFIG,
-                                                PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::buildMaps()');
-                        
+                        return PEAR::raiseError('Duplicate alias for long option ' . $alias, CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::buildMaps()');
                     }
                     $this->_aliasLong[$alias] = $longname;
                 }
@@ -629,7 +601,6 @@ class Console_Getargs_Options
                 // Get rid of the old version (name|alias1|...)
                 unset($this->_config[$long]);
             }
-            
             // Add the (optional) short option names.
             if (!empty($def['short'])) {
                 // Short names
@@ -642,8 +613,7 @@ class Console_Getargs_Options
                     foreach ($shortArr as $alias) {
                         // Watch out for duplicate aliases.
                         if (isset($this->_shortLong[$alias])) {
-                            return PEAR::raiseError('Duplicate alias for short option '.$alias, CONSOLE_GETARGS_ERROR_CONFIG,
-                                                    PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::buildMaps()');
+                            return PEAR::raiseError('Duplicate alias for short option ' . $alias, CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::buildMaps()');
                         }
                         $this->_shortLong[$alias] = $longname;
                     }
@@ -654,13 +624,13 @@ class Console_Getargs_Options
         }
         return true;
     }
-    
     /**
      * Parses the given options/arguments one by one
-     * @access private
-     * @throws CONSOLE_GETARGS_HELP
+     *
+     * @access private                   
+     * @throws CONSOLE_GETARGS_HELP      
      * @throws CONSOLE_GETARGS_ERROR_USER
-     * @return true|PEAR_Error
+     * @return true|PEAR_Error           
      */
     function parseArgs()
     {
@@ -670,7 +640,6 @@ class Console_Getargs_Options
             if ($arg === '--help' || $arg === '-h') {
                 // Asking for help breaks the loop.
                 return PEAR::raiseError(null, CONSOLE_GETARGS_HELP, PEAR_ERROR_RETURN);
-
             }
             if ($arg === '--') {
                 // '--' alone signals the start of "parameters"
@@ -681,17 +650,15 @@ class Console_Getargs_Options
             } else if (strlen($arg) > 1 && $arg{0} == '-') {
                 // Short name used (-o)
                 $err = $this->parseArg(substr($arg, 1), false, $i);
-                if ($err === -1) {
+                if ($err === - 1) {
                     break;
                 }
             } elseif (isset($this->_config[CONSOLE_GETARGS_PARAMS])) {
                 // No flags at all. Try the parameters option.
-                $tempI = &$i - 1;
+                $tempI = & $i - 1;
                 $err = $this->parseArg(CONSOLE_GETARGS_PARAMS, true, $tempI);
             } else {
-                $err = PEAR::raiseError('Unknown argument '.$arg,
-                                        CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                        null, 'Console_Getargs_Options::parseArgs()');
+                $err = PEAR::raiseError('Unknown argument ' . $arg, CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::parseArgs()');
             }
             if ($err !== true) {
                 return $err;
@@ -699,18 +666,17 @@ class Console_Getargs_Options
         }
         // Check to see if we need to reload the arguments
         // due to concatenated short names.
-        if (isset($err) && $err === -1) {
+        if (isset($err) && $err === - 1) {
             return $this->parseArgs();
         }
-        
         return true;
     }
-    
     /**
      * Parses one option/argument
-     * @access private
+     *
+     * @access private                   
      * @throws CONSOLE_GETARGS_ERROR_USER
-     * @return true|PEAR_Error
+     * @return true|PEAR_Error           
      */
     function parseArg($arg, $isLong, &$pos)
     {
@@ -727,19 +693,16 @@ class Console_Getargs_Options
             }
             // Add the new args to the array.
             array_splice($this->args, $pos, 1, $newArgs);
-            
             // Reset the option values.
             $this->_longLong = array();
-            $this->_defined  = array();
-            
+            $this->_defined = array();
             // Then reparse the arguments.
             return -1;
         }
-        
         $opt = '';
         for ($i = 0; $i < strlen($arg); $i++) {
             // Build the option name one char at a time looking for a match.
-            $opt .= $arg{$i};
+            $opt.= $arg{$i};
             if ($isLong === false && isset($this->_shortLong[$opt])) {
                 // Found a match in the short option names.
                 $cmp = $opt;
@@ -757,12 +720,10 @@ class Console_Getargs_Options
                 break;
             }
         }
-
         // If no option name is found, assume -- was passed.
         if ($opt == '') {
             $long = CONSOLE_GETARGS_PARAMS;
         }
-        
         if (isset($long)) {
             // A match was found.
             if (strlen($arg) > strlen($cmp)) {
@@ -775,6 +736,7 @@ class Console_Getargs_Options
                 if ($arg{0} === '=') {
                     $arg = substr($arg, 1);
                     // Now $arg = 'image.png'
+                    
                 }
             } else {
                 // No argument passed for option.
@@ -783,30 +745,24 @@ class Console_Getargs_Options
             // Set the options value.
             return $this->setValue($long, $arg, $pos);
         }
-        return PEAR::raiseError('Unknown argument '.$opt,
-                                CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                null, 'Console_Getargs_Options::parseArg()');
+        return PEAR::raiseError('Unknown argument ' . $opt, CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::parseArg()');
     }
-    
     /**
      * Set the option arguments
-     * @access private
+     *
+     * @access private                     
      * @throws CONSOLE_GETARGS_ERROR_CONFIG
-     * @throws CONSOLE_GETARGS_ERROR_USER
-     * @return true|PEAR_Error
+     * @throws CONSOLE_GETARGS_ERROR_USER  
+     * @return true|PEAR_Error             
      */
     function setValue($optname, $value, &$pos)
     {
         if (!isset($this->_config[$optname]['max'])) {
             // Max must be set for every option even if it is zero or -1.
-            return PEAR::raiseError('No max parameter set for '.$optname,
-                                    CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER,
-                                    E_USER_WARNING, 'Console_Getargs_Options::setValue()');
+            return PEAR::raiseError('No max parameter set for ' . $optname, CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::setValue()');
         }
-        
         $max = (int)$this->_config[$optname]['max'];
-        $min = isset($this->_config[$optname]['min']) ? (int)$this->_config[$optname]['min']: $max;
-
+        $min = isset($this->_config[$optname]['min']) ? (int)$this->_config[$optname]['min'] : $max;
         // A value was passed after the option.
         if ($value !== '') {
             // Argument is like -v5
@@ -817,75 +773,58 @@ class Console_Getargs_Options
             }
             if ($max === 0) {
                 // Argument passed but not expected.
-                return PEAR::raiseError('Argument '.$optname.' does not take any value',
-                                        CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                        null, 'Console_Getargs_Options::setValue()');
+                return PEAR::raiseError('Argument ' . $optname . ' does not take any value', CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::setValue()');
             }
             // Not enough arguments passed for this option.
-            return PEAR::raiseError('Argument '.$optname.' expects more than one value',
-                                    CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                    null, 'Console_Getargs_Options::setValue()');
+            return PEAR::raiseError('Argument ' . $optname . ' expects more than one value', CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::setValue()');
         }
-        
         if ($min === 1 && $max === 1) {
             // Argument requires 1 value
             // If optname is "parameters" take a step back.
             if ($optname == CONSOLE_GETARGS_PARAMS) {
                 $pos--;
             }
-            if (isset($this->args[$pos+1]) && $this->isValue($this->args[$pos+1])) {
+            if (isset($this->args[$pos + 1]) && $this->isValue($this->args[$pos + 1])) {
                 // Set the option value and increment the position.
-                $this->updateValue($optname, $this->args[$pos+1]);
+                $this->updateValue($optname, $this->args[$pos + 1]);
                 $pos++;
                 return true;
             }
             // What we thought was the argument was really the next option.
-            return PEAR::raiseError('Argument '.$optname.' expects one value',
-                                    CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                    null, 'Console_Getargs_Options::setValue()');
-            
+            return PEAR::raiseError('Argument ' . $optname . ' expects one value', CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::setValue()');
         } else if ($max === 0) {
             // Argument is a switch
-            if (isset($this->args[$pos+1]) && $this->isValue($this->args[$pos+1])) {
+            if (isset($this->args[$pos + 1]) && $this->isValue($this->args[$pos + 1])) {
                 // What we thought was the next option was really an argument for this option.
                 // First update the value
-                $this->updateValue($optname, true);                
+                $this->updateValue($optname, true);
                 // Then try to assign values to parameters.
                 if (isset($this->_config[CONSOLE_GETARGS_PARAMS])) {
                     return $this->setValue(CONSOLE_GETARGS_PARAMS, '', ++$pos);
                 } else {
-                    return PEAR::raiseError('Argument '.$optname.' does not take any value',
-                                            CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                            null, 'Console_Getargs_Options::setValue()');
+                    return PEAR::raiseError('Argument ' . $optname . ' does not take any value', CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::setValue()');
                 }
             }
             // Set the switch to on.
             $this->updateValue($optname, true);
             return true;
-            
         } else if ($max >= 1 && $min === 0) {
             // Argument has a default-if-set value
             if (!isset($this->_config[$optname]['default'])) {
                 // A default value MUST be assigned when config is loaded.
-                return PEAR::raiseError('No default value defined for '.$optname,
-                                        CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER,
-                                        E_USER_WARNING, 'Console_Getargs_Options::setValue()');
+                return PEAR::raiseError('No default value defined for ' . $optname, CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::setValue()');
             }
             if (is_array($this->_config[$optname]['default'])) {
                 // Default value cannot be an array.
-                return PEAR::raiseError('Default value for '.$optname.' must be scalar',
-                                        CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER,
-                                        E_USER_WARNING, 'Console_Getargs_Options::setValue()');
+                return PEAR::raiseError('Default value for ' . $optname . ' must be scalar', CONSOLE_GETARGS_ERROR_CONFIG, PEAR_ERROR_TRIGGER, E_USER_WARNING, 'Console_Getargs_Options::setValue()');
             }
-            
             // If optname is "parameters" take a step back.
             if ($optname == CONSOLE_GETARGS_PARAMS) {
                 $pos--;
             }
-            
-            if (isset($this->args[$pos+1]) && $this->isValue($this->args[$pos+1])) {
+            if (isset($this->args[$pos + 1]) && $this->isValue($this->args[$pos + 1])) {
                 // Assign the option the value from the command line if there is one.
-                $this->updateValue($optname, $this->args[$pos+1]);
+                $this->updateValue($optname, $this->args[$pos + 1]);
                 $pos++;
                 return true;
             }
@@ -893,7 +832,6 @@ class Console_Getargs_Options
             $this->updateValue($optname, $this->_config[$optname]['default']);
             return true;
         }
-        
         // Argument takes one or more values
         $added = 0;
         // If trying to assign values to parameters, must go back one position.
@@ -901,7 +839,7 @@ class Console_Getargs_Options
             $pos = max($pos - 1, -1);
         }
         for ($i = $pos + 1; $i <= count($this->args); $i++) {
-            $paramFull = $max <= count($this->getValue($optname)) && $max != -1;
+            $paramFull = $max <= count($this->getValue($optname)) && $max != - 1;
             if (isset($this->args[$i]) && $this->isValue($this->args[$i]) && !$paramFull) {
                 // Add the argument value until the next option is hit.
                 $this->updateValue($optname, $this->args[$i]);
@@ -915,21 +853,17 @@ class Console_Getargs_Options
             }
             if ($min > $added && !$paramFull) {
                 // There aren't enough arguments for this option.
-                return PEAR::raiseError('Argument '.$optname.' expects at least '.$min.(($min > 1) ? ' values' : ' value'),
-                                        CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                        null, 'Console_Getargs_Options::setValue()');
-            } elseif ($max !== -1 && $paramFull) {
+                return PEAR::raiseError('Argument ' . $optname . ' expects at least ' . $min . (($min > 1) ? ' values' : ' value'), CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::setValue()');
+            } elseif ($max !== - 1 && $paramFull) {
                 // Too many arguments for this option.
                 // Try to add the extra options to parameters.
                 if (isset($this->_config[CONSOLE_GETARGS_PARAMS]) && $optname != CONSOLE_GETARGS_PARAMS) {
                     return $this->setValue(CONSOLE_GETARGS_PARAMS, '', ++$pos);
                 } elseif ($optname == CONSOLE_GETARGS_PARAMS && empty($this->args[$i])) {
-                    $pos += $added;
+                    $pos+= $added;
                     break;
                 } else {
-                    return PEAR::raiseError('Argument '.$optname.' expects maximum '.$max.' values',
-                                            CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN,
-                                            null, 'Console_Getargs_Options::setValue()');
+                    return PEAR::raiseError('Argument ' . $optname . ' expects maximum ' . $max . ' values', CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::setValue()');
                 }
             }
             break;
@@ -937,29 +871,28 @@ class Console_Getargs_Options
         // Everything went well.
         return true;
     }
-    
     /**
      * Checks whether the given parameter is an argument or an option
+     *
      * @access private
      * @return boolean
      */
     function isValue($arg)
     {
-        if ((strlen($arg) > 1 && $arg{0} == '-' && $arg{1} == '-') ||
-            (strlen($arg) > 1 && $arg{0} == '-')) {
+        if ((strlen($arg) > 1 && $arg{0} == '-' && $arg{1} == '-') || (strlen($arg) > 1 && $arg{0} == '-')) {
             // The next argument is really an option.
             return false;
         }
         return true;
     }
-    
     /**
      * Adds the argument to the option
      *
      * If the argument for the option is already set,
      * the option arguments will be changed to an array
+     *
      * @access private
-     * @return void
+     * @return void   
      */
     function updateValue($optname, $value)
     {
@@ -979,28 +912,24 @@ class Console_Getargs_Options
         }
         $this->_defined[$optname] = true;
     }
-    
     /**
      * Sets the option default arguments when necessary
+     *
      * @access private
-     * @return true
+     * @return true   
      */
     function setDefaults()
     {
         foreach ($this->_config as $longname => $def) {
-            // Add the default value only if the default is defined 
+            // Add the default value only if the default is defined
             // and the option requires at least one argument.
-            if (isset($def['default']) && 
-			    ((isset($def['min']) && $def['min'] !== 0) ||
-				(!isset($def['min']) & isset($def['max']) && $def['max'] !== 0)) &&
-				!isset($this->_longLong[$longname])) {
+            if (isset($def['default']) && ((isset($def['min']) && $def['min'] !== 0) || (!isset($def['min']) & isset($def['max']) && $def['max'] !== 0)) && !isset($this->_longLong[$longname])) {
                 $this->_longLong[$longname] = $def['default'];
                 $this->_defined[$longname] = false;
             }
         }
         return true;
     }
-    
     /**
      * Checks whether the given option is defined
      *
@@ -1008,8 +937,9 @@ class Console_Getargs_Options
      * the command line options. You can use the short, the long or
      * an alias name as parameter.
      *
-     * @access public
-     * @param  string the name of the option to be checked
+     * @param string $optname the name of the option to be checked
+     *
+     * @access public 
      * @return boolean true if the option is defined
      */
     function isDefined($optname)
@@ -1017,7 +947,6 @@ class Console_Getargs_Options
         $longname = $this->getLongName($optname);
         return isset($this->_defined[$longname]) && $this->_defined[$longname];
     }
-    
     /**
      * Returns the long version of the given parameter
      *
@@ -1025,8 +954,9 @@ class Console_Getargs_Options
      * was given, without further ensuring that the option
      * actually exists
      *
+     * @param string $optname the name of the option
+     *
      * @access private
-     * @param  string the name of the option
      * @return string long version of the option name
      */
     function getLongName($optname)
@@ -1043,7 +973,6 @@ class Console_Getargs_Options
         }
         return $longname;
     }
-    
     /**
      * Returns the argument of the given option
      *
@@ -1052,13 +981,14 @@ class Console_Getargs_Options
      * If it is not found it will return null. If the arg has more than
      * one argument, an array of arguments will be returned.
      *
-     * @access public
-     * @param  string the name of the option
+     * @param string $optname the name of the option
+     *
+     * @access public           
      * @return array|string|null argument(s) associated with the option
      */
     function getValue($optname)
     {
-            $longname = $this->getLongName($optname);
+        $longname = $this->getLongName($optname);
         if (isset($this->_longLong[$longname])) {
             // Option is defined. Return its value
             return $this->_longLong[$longname];
@@ -1066,7 +996,6 @@ class Console_Getargs_Options
         // Option is not defined.
         return null;
     }
-
     /**
      * Returns all arguments that have been parsed and recognized
      *
@@ -1074,44 +1003,44 @@ class Console_Getargs_Options
      * You may choose whether you want to use the long or the short
      * option names
      *
+     * @param string $optionNames option names to use for the keys (long or short)
+     *
      * @access public
-     * @param  string   option names to use for the keys (long or short)
-     * @return array    values for all options
+     * @return array values for all options
      */
     function getValues($optionNames = 'long')
     {
         switch ($optionNames) {
-            case 'short':
-                $values = array();
-                foreach ($this->_shortLong as $short => $long) {
-                	if (isset($this->_longLong[$long])) {
-                		$values[$short] = $this->_longLong[$long];
-                	}
+        case 'short':
+            $values = array();
+            foreach ($this->_shortLong as $short => $long) {
+                if (isset($this->_longLong[$long])) {
+                    $values[$short] = $this->_longLong[$long];
                 }
-                if (isset($this->_longLong['parameters'])) {
-                	$values['parameters'] = $this->_longLong['parameters'];
-                }
-                return $values;
-            case 'long':
-            default:
-                return $this->_longLong;
+            }
+            if (isset($this->_longLong['parameters'])) {
+                $values['parameters'] = $this->_longLong['parameters'];
+            }
+            return $values;
+        case 'long':
+        default:
+            return $this->_longLong;
         }
     }
-
+    /**
+     * checkRequired 
+     * 
+     * @access public
+     * @return void
+     */
     function checkRequired()
     {
         foreach ($this->_config as $optName => $opt) {
-            if (isset($opt['min']) && $opt['min'] == 1 &&
-                $this->getValue($optName) === null
-                ) {
-                $err = PEAR::raiseError($optName . ' is required', 
-                                        CONSOLE_GETARGS_ERROR_USER,
-                                        PEAR_ERROR_RETURN, null,
-                                        'Console_Getargs_Options::parseArgs()'
-                                        );
+            if (isset($opt['min']) && $opt['min'] == 1 && $this->getValue($optName) === null) {
+                $err = PEAR::raiseError($optName . ' is required', CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::parseArgs()');
                 return $err;
             }
-        }        
+        }
         return true;
     }
 } // end class Console_Getargs_Options
@@ -1120,5 +1049,5 @@ class Console_Getargs_Options
  * tab-width: 4
  * c-basic-offset: 4
  * End:
- */
+*/
 ?>
