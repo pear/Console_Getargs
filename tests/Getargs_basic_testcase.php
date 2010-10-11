@@ -306,7 +306,7 @@ class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
         $obj =& Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
-            $this->fail("'$message' ".$obj->getMessage());
+            $this->fail($obj->getMessage());
         } else {
             $this->assertEquals('default1', $obj->getValue('name'), "'$message' Incorrect values returned");
         }
@@ -337,7 +337,7 @@ class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
         $obj =& Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
-            $this->fail("'$message' ".$obj->getMessage());
+            $this->fail($obj->getMessage());
         } else {
             $this->assertEquals(array('arg1', 'arg2', 'arg3'), $obj->getValue('name'), "'$message' Incorrect values returned");
         }
@@ -380,7 +380,7 @@ class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
             $obj =& Console_Getargs::factory($config, array($arg));
     
             if (PEAR::isError($obj)) {
-                $this->fail("'$message' ".$obj->getMessage());
+                $this->fail($obj->getMessage());
             } else {
                 $this->assertTrue($obj->isDefined('name'), "Value 'name' is not defined");
                 $this->assertTrue($obj->isDefined('alias'), "Value 'alias' is not defined");
@@ -389,6 +389,85 @@ class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
             }
         }
     }
+
+
+
+    /**
+    * isDefined should return true when the parameter is passed on cmdline
+    */
+    function testIsDefined()
+    {
+        $config = array(
+            'name' => array(
+                'short'   => 'n',
+                'min'     => 1,
+                'max'     => 1,
+                'desc'    => 'An argument.',
+                'default' => 'john'
+            )
+        );
+
+        $args = array('-n', 'arg1');
+        $obj  =& Console_Getargs::factory($config, $args);
+
+        $this->assertFalse(PEAR::isError($obj));
+        $this->assertTrue($obj->isDefined('n'));
+        $this->assertTrue($obj->isDefined('name'));
+    }
+
+
+
+    /**
+    * isDefined should return true when the parameter is passed on cmdline,
+    * even when checking for the alias name
+    */
+    function testIsDefinedAlias()
+    {
+        $config = array(
+            'name|alias' => array(
+                'short'   => 'n',
+                'min'     => 1,
+                'max'     => 1,
+                'desc'    => 'An argument.',
+                'default' => 'john'
+            )
+        );
+
+        $args = array('-n', 'arg1');
+        $obj  =& Console_Getargs::factory($config, $args);
+
+        $this->assertFalse(PEAR::isError($obj));
+        $this->assertTrue($obj->isDefined('n'));
+        $this->assertTrue($obj->isDefined('name'));
+        $this->assertTrue($obj->isDefined('alias'));
+    }
+
+
+
+    /**
+    * isDefined should return false when the parameter is not
+    * given on cmdline - even if there is a default value
+    */
+    function testIsDefinedDefaultOnly()
+    {
+        $config = array(
+            'name' => array(
+                'short'   => 'n',
+                'min'     => 1,
+                'max'     => 1,
+                'desc'    => 'An argument.',
+                'default' => 'john'
+            )
+        );
+
+        $args = array();
+        $obj  =& Console_Getargs::factory($config, $args);
+
+        $this->assertFalse(PEAR::isError($obj));
+        $this->assertFalse($obj->isDefined('n'));
+        $this->assertFalse($obj->isDefined('name'));
+    }
+
 
 }
 

@@ -549,6 +549,13 @@ class Console_Getargs_Options
     var $_longLong = array();
     
     /**
+     * If arguments have been defined on cmdline
+     * @var array
+     * @access private
+     */
+    var $_defined = array();
+
+    /**
      * Configuration set at initialization time
      * @var array
      * @access private
@@ -723,6 +730,7 @@ class Console_Getargs_Options
             
             // Reset the option values.
             $this->_longLong = array();
+            $this->_defined  = array();
             
             // Then reparse the arguments.
             return -1;
@@ -969,6 +977,7 @@ class Console_Getargs_Options
             // This is the first value for this option.
             $this->_longLong[$optname] = $value;
         }
+        $this->_defined[$optname] = true;
     }
     
     /**
@@ -986,6 +995,7 @@ class Console_Getargs_Options
 				(!isset($def['min']) & isset($def['max']) && $def['max'] !== 0)) &&
 				!isset($this->_longLong[$longname])) {
                 $this->_longLong[$longname] = $def['default'];
+                $this->_defined[$longname] = false;
             }
         }
         return true;
@@ -1005,10 +1015,7 @@ class Console_Getargs_Options
     function isDefined($optname)
     {
         $longname = $this->getLongName($optname);
-        if (isset($this->_longLong[$longname])) {
-            return true;
-        }
-        return false;
+        return isset($this->_defined[$longname]) && $this->_defined[$longname];
     }
     
     /**
@@ -1051,9 +1058,9 @@ class Console_Getargs_Options
      */
     function getValue($optname)
     {
-        if ($this->isDefined($optname)) {
-            // Option is defined. Return its value
             $longname = $this->getLongName($optname);
+        if (isset($this->_longLong[$longname])) {
+            // Option is defined. Return its value
             return $this->_longLong[$longname];
         }
         // Option is not defined.
