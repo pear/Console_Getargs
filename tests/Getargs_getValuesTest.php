@@ -26,7 +26,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 }
 
 require_once 'Console/Getargs.php';
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
  * getValues Test case for Console_Getargs
@@ -40,7 +40,7 @@ require_once 'PHPUnit/Framework.php';
  * @version    Release: @package_version@
  * @link       http://pear.php.net/package/Console_Getargs
  */
-class Getargs_getValues_testCase extends PHPUnit_Framework_TestCase
+class Getargs_getValuesTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Runs the test methods of this class.
