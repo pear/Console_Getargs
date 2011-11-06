@@ -22,13 +22,13 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 }
 
 require_once 'Console/Getargs.php';
-require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
  * Unit tests for Console_Getargs package.
  */
 
-class Getargs_Basic_testCase extends PHPUnit_Framework_TestCase
+class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 {
     /**
      * Runs the test methods of this class.
