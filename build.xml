@@ -46,5 +46,5 @@
 		</exec>
 	</target>
 
-	<target name="build" depends="clean,phpunit,package"/>
+	<target name="build" depends="clean,phpunit,phpcs-ci,package"/>
 </project>
