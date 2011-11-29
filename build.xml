@@ -26,6 +26,14 @@
 		<mkdir dir="${basedir}/build/pdepend"/>
 	</target>
 
+	<target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer">
+		<exec executable="phpcs" output="/dev/null">
+			<arg value="--report=checkstyle" />
+			<arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+			<arg path="${basedir}" />
+		</exec>
+	</target>
+
 	<target name="phpunit">
 		<exec dir="${basedir}" executable="${phpunit.bin}" failonerror="true">
 			<arg line="."/>
