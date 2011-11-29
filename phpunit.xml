@@ -19,5 +19,7 @@
 	</testsuites>
 	<php>
 		<includePath>lib/</includePath>
+		<!-- E_ALL -->
+		<ini name="error_reporting" value="30719" />
 	</php>
 </phpunit>
