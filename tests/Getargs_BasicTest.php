@@ -30,21 +30,6 @@ require_once 'PHPUnit/Framework/TestCase.php';
 
 class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * Runs the test methods of this class.
-     *
-     * @access public
-     * @static
-     */
-    public static function main() {
-        require_once 'PHPUnit/TextUI/TestRunner.php';
-
-        $suite  = new PHPUnit_Framework_TestSuite('Getargs_Basic_testCase');
-        PHPUnit_TextUI_TestRunner::run($suite);
-    }
-
-
-
     function testFixed1()
     {
         $config = array(
@@ -57,7 +42,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('-n', 'arg1');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -67,7 +52,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('--name', 'arg1');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -88,7 +73,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('-n', 'arg1', 'arg2');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -98,7 +83,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('--name', 'arg1', 'arg2');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -120,7 +105,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('--name', 'arg1');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -130,7 +115,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array();
 
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail($obj->getMessage());
@@ -152,7 +137,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('--names', 'arg1', 'arg2');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -162,7 +147,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array();
 
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail($obj->getMessage());
@@ -183,7 +168,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('-s');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -194,7 +179,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('--switch');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -218,7 +203,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('-d');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -229,7 +214,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('-d', 4);
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -250,7 +235,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
         
         $args = array('--name', 'arg1');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -260,7 +245,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('--name', 'arg1', 'arg2', 'arg3');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -283,7 +268,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
         
         $args = array('--name', 'arg1');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -293,7 +278,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('--name', 'arg1', 'arg2', 'arg3');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -303,7 +288,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array();
 
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail($obj->getMessage());
@@ -324,7 +309,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
         
         $args = array('--name', 'arg1');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail("'$message' ".$obj->getMessage());
@@ -334,7 +319,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array('--name', 'arg1', 'arg2', 'arg3');
         $message = implode(' ', $args);
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail($obj->getMessage());
@@ -355,7 +340,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
         $args = array();
 
-        $obj =& Console_Getargs::factory($config, $args);
+        $obj = Console_Getargs::factory($config, $args);
 
         if (PEAR::isError($obj)) {
             $this->fail($obj->getMessage());
@@ -377,7 +362,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
         $args = array('-n', '-a', '--name', '--alias');
         foreach ($args as $arg) {
             $message = $arg;
-            $obj =& Console_Getargs::factory($config, array($arg));
+            $obj = Console_Getargs::factory($config, array($arg));
     
             if (PEAR::isError($obj)) {
                 $this->fail($obj->getMessage());
@@ -408,7 +393,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
         );
 
         $args = array('-n', 'arg1');
-        $obj  =& Console_Getargs::factory($config, $args);
+        $obj  = Console_Getargs::factory($config, $args);
 
         $this->assertFalse(PEAR::isError($obj));
         $this->assertTrue($obj->isDefined('n'));
@@ -434,7 +419,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
         );
 
         $args = array('-n', 'arg1');
-        $obj  =& Console_Getargs::factory($config, $args);
+        $obj  = Console_Getargs::factory($config, $args);
 
         $this->assertFalse(PEAR::isError($obj));
         $this->assertTrue($obj->isDefined('n'));
@@ -461,7 +446,7 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
         );
 
         $args = array();
-        $obj  =& Console_Getargs::factory($config, $args);
+        $obj  = Console_Getargs::factory($config, $args);
 
         $this->assertFalse(PEAR::isError($obj));
         $this->assertFalse($obj->isDefined('n'));
@@ -471,8 +456,3 @@ class Getargs_BasicTest extends PHPUnit_Framework_TestCase
 
 }
 
-if (PHPUnit_MAIN_METHOD == 'Getargs_Basic_testCase::main') {
-    Getargs_Basic_testCase::main();
-}
-
-?>
