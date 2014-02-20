@@ -1,0 +1,41 @@
+{
+    "authors": [
+        {
+            "email": "bmansion@mamasam.com",
+            "name": "Bertrand Mansion",
+            "role": "Lead"
+        },
+        {
+            "email": "scottmattocks@php.net",
+            "name": "Scott Mattocks",
+            "role": "Lead"
+        },
+        {
+            "email": "wenz@php.net",
+            "name": "Christian Wenz",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Console": "./"
+        }
+    },
+    "description": "More info available on: http://pear.php.net/package/Console_Getargs",
+    "include-path": [
+        "./"
+    ],
+    "license": "PHP License",
+    "name": "pear/console_getargs",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Console_Getargs",
+        "source": "https://github.com/pear/Console_Getargs"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
