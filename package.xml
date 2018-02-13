@@ -48,7 +48,7 @@ based on the given configuration.</description>
    <file baseinstalldir="Console" md5sum="8b053b550ce74b06f7b000906df47f8f" name="examples/example2.php" role="doc" />
    <file baseinstalldir="/" md5sum="ae35d76786d4753954495f05f2935a3b" name="tests/Getargs_BasicTest.php" role="test" />
    <file baseinstalldir="/" md5sum="32ada775f0d4d8bee604bbe08298d61b" name="tests/Getargs_getValuesTest.php" role="test" />
-   <file baseinstalldir="/" md5sum="c6adc2abcd57bf1315a6619032335dc0" name="README" role="data" />
+   <file baseinstalldir="/" md5sum="c6adc2abcd57bf1315a6619032335dc0" name="README" role="doc" />
   </dir>
  </contents>
  <dependencies>
