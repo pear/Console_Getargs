@@ -221,7 +221,7 @@ class Console_Getargs
      * @return object|PEAR_Error a newly created Console_Getargs_Options
      *                           object or a PEAR_Error object on error
      */
-    function &factory($config = array(), $arguments = null)
+    static function &factory($config = array(), $arguments = null)
     {
         // Create the options object.
         $obj = new Console_Getargs_Options();
@@ -901,7 +901,13 @@ class Console_Getargs_Options
             $pos = max($pos - 1, -1);
         }
         for ($i = $pos + 1; $i <= count($this->args); $i++) {
-            $paramFull = $max <= count($this->getValue($optname)) && $max != - 1;
+            $v = $this->getValue($optname);
+            if (is_array($v)) {
+                $c = count($v);
+            } else {
+                $c = ($v ? 1 : 0);
+            }
+            $paramFull = $max <= $c && $max != - 1;
             if (isset($this->args[$i]) && $this->isValue($this->args[$i]) && !$paramFull) {
                 // Add the argument value until the next option is hit.
                 $this->updateValue($optname, $this->args[$i]);
