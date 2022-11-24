@@ -308,7 +308,7 @@ class Console_Getargs
             if (isset($_SERVER['SCRIPT_NAME'])) {
                 $filename = basename($_SERVER['SCRIPT_NAME']);
             } else {
-                $filename = $argv[0];
+                $filename = $_SERVER['argv'][0];
             }
             $helpHeader = 'Usage: ' . $filename . ' ';
             // Add the optional arguments and required arguments.
@@ -607,8 +607,8 @@ class Console_Getargs_Options
         }
 
         // Drop the first argument if it doesn't begin with a '-'.
-        if (isset($this->args[0] { 0 })
-            && $this->args[0] { 0 } != '-'
+        if (isset($this->args[0] [0])
+            && $this->args[0] [0] != '-'
         ) {
             array_shift($this->args);
         }
@@ -692,10 +692,10 @@ class Console_Getargs_Options
             if ($arg === '--') {
                 // '--' alone signals the start of "parameters"
                 $err = $this->parseArg(CONSOLE_GETARGS_PARAMS, true, ++$i);
-            } elseif (strlen($arg) > 1 && $arg{0} == '-' && $arg{1} == '-') {
+            } elseif (strlen($arg) > 1 && $arg[0] == '-' && $arg[1] == '-') {
                 // Long name used (--option)
                 $err = $this->parseArg(substr($arg, 2), true, $i);
-            } else if (strlen($arg) > 1 && $arg{0} == '-') {
+            } else if (strlen($arg) > 1 && $arg[0] == '-') {
                 // Short name used (-o)
                 $err = $this->parseArg(substr($arg, 1), false, $i);
                 if ($err === - 1) {
@@ -703,7 +703,7 @@ class Console_Getargs_Options
                 }
             } elseif (isset($this->_config[CONSOLE_GETARGS_PARAMS])) {
                 // No flags at all. Try the parameters option.
-                $tempI = & $i - 1;
+                $tempI = $i - 1;
                 $err = $this->parseArg(CONSOLE_GETARGS_PARAMS, true, $tempI);
             } else {
                 $err = PEAR::raiseError('Unknown argument ' . $arg, CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::parseArgs()');
@@ -735,10 +735,10 @@ class Console_Getargs_Options
         if (!$isLong && !isset($this->_shortLong[$arg]) && strlen($arg) > 1) {
             $newArgs = array();
             for ($i = 0; $i < strlen($arg); $i++) {
-                if (array_key_exists($arg{$i}, $this->_shortLong)) {
-                    $newArgs[] = '-' . $arg{$i};
+                if (array_key_exists($arg[$i], $this->_shortLong)) {
+                    $newArgs[] = '-' . $arg[$i];
                 } else {
-                    $newArgs[] = $arg{$i};
+                    $newArgs[] = $arg[$i];
                 }
             }
             // Add the new args to the array.
@@ -755,7 +755,7 @@ class Console_Getargs_Options
         $opt = '';
         for ($i = 0; $i < strlen($arg); $i++) {
             // Build the option name one char at a time looking for a match.
-            $opt.= $arg{$i};
+            $opt.= $arg[$i];
             if ($isLong === false && isset($this->_shortLong[$opt])) {
                 // Found a match in the short option names.
                 $cmp = $opt;
@@ -768,7 +768,7 @@ class Console_Getargs_Options
                 $long = $this->_aliasLong[$opt];
                 $cmp = $opt;
             }
-            if ($arg{$i} === '=') {
+            if ($arg[$i] === '=') {
                 // End of the option name when '=' is found.
                 break;
             }
@@ -788,7 +788,7 @@ class Console_Getargs_Options
                 //     $arg = 'f=image.png'
                 $arg = substr($arg, strlen($cmp));
                 // Now $arg = '=image.png'
-                if ($arg{0} === '=') {
+                if ($arg[0] === '=') {
                     $arg = substr($arg, 1);
                     // Now $arg = 'image.png'
                 }
@@ -948,7 +948,7 @@ class Console_Getargs_Options
      */
     function isValue($arg)
     {
-        if ((strlen($arg) > 1 && $arg{0} == '-' && $arg{1} == '-') || (strlen($arg) > 1 && $arg{0} == '-')) {
+        if ((strlen($arg) > 1 && $arg[0] == '-' && $arg[1] == '-') || (strlen($arg) > 1 && $arg[0] == '-')) {
             // The next argument is really an option.
             return false;
         }
