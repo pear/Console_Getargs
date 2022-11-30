@@ -303,7 +303,7 @@ class Console_Getargs
         // If no user defined header, build the default header.
         if (!isset($helpHeader)) {
             // Get the optional, required and "paramter" names for this config.
-            list($optional, $required, $params) = Console_Getargs::getOptionalRequired($config);
+            list($optional, $required, $params) = $this->getOptionalRequired($config);
             // Start with the file name.
             if (isset($_SERVER['SCRIPT_NAME'])) {
                 $filename = basename($_SERVER['SCRIPT_NAME']);
@@ -691,7 +691,8 @@ class Console_Getargs_Options
             }
             if ($arg === '--') {
                 // '--' alone signals the start of "parameters"
-                $err = $this->parseArg(CONSOLE_GETARGS_PARAMS, true, ++$i);
+                ++$i;
+                $err = $this->parseArg(CONSOLE_GETARGS_PARAMS, true, $i);
             } elseif (strlen($arg) > 1 && $arg[0] == '-' && $arg[1] == '-') {
                 // Long name used (--option)
                 $err = $this->parseArg(substr($arg, 2), true, $i);
@@ -858,7 +859,8 @@ class Console_Getargs_Options
                 $this->updateValue($optname, true);
                 // Then try to assign values to parameters.
                 if (isset($this->_config[CONSOLE_GETARGS_PARAMS])) {
-                    return $this->setValue(CONSOLE_GETARGS_PARAMS, '', ++$pos);
+                    ++$pos;
+                    return $this->setValue(CONSOLE_GETARGS_PARAMS, '', $pos);
                 } else {
                     return PEAR::raiseError('Argument ' . $optname . ' does not take any value', CONSOLE_GETARGS_ERROR_USER, PEAR_ERROR_RETURN, null, 'Console_Getargs_Options::setValue()');
                 }
@@ -926,7 +928,8 @@ class Console_Getargs_Options
                 // Too many arguments for this option.
                 // Try to add the extra options to parameters.
                 if (isset($this->_config[CONSOLE_GETARGS_PARAMS]) && $optname != CONSOLE_GETARGS_PARAMS) {
-                    return $this->setValue(CONSOLE_GETARGS_PARAMS, '', ++$pos);
+                    ++$pos;
+                    return $this->setValue(CONSOLE_GETARGS_PARAMS, '', $pos);
                 } elseif ($optname == CONSOLE_GETARGS_PARAMS && empty($this->args[$i])) {
                     $pos+= $added;
                     break;
